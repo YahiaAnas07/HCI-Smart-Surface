@@ -189,11 +189,11 @@ public class TuioDemo : Form, TuioListener
 
         int circleDiameter = 200;
         int circleY = 100;
-        circles.Add(new Circle((width / 4) - (circleDiameter / 2), circleY, circleDiameter, circleDiameter, Color.PaleVioletRed));
-        circles.Add(new Circle((width / 2) - (circleDiameter / 2), circleY, circleDiameter, circleDiameter, Color.PaleVioletRed));
-        circles.Add(new Circle((3 * width / 4) - (circleDiameter / 2), circleY, circleDiameter, circleDiameter, Color.PaleVioletRed));
+        circles.Add(new Circle((width / 4) - (circleDiameter / 2), circleY, circleDiameter, circleDiameter, Color.Gray));
+        circles.Add(new Circle((width / 2) - (circleDiameter / 2), circleY, circleDiameter, circleDiameter, Color.Gray));
+        circles.Add(new Circle((3 * width / 4) - (circleDiameter / 2), circleY, circleDiameter, circleDiameter, Color.Gray));
 
-        circles.Add(new Circle((width / 2) - (circleDiameter / 2), height / 2 - circleDiameter / 2, circleDiameter, circleDiameter, Color.Teal));
+        circles.Add(new Circle((width / 2) - (300 / 2), height / 2 - 300/ 2, 300, 300, Color.Teal));
 
 
         circles.Add(new Circle(width - 230, 800, 100, 100, Color.Teal));
@@ -203,9 +203,9 @@ public class TuioDemo : Form, TuioListener
         int rectHeight = 250;
         int rectX = 100;
         int rectY = 250;
-        rectangles.Add(new RectangleShape(rectX, rectY, rectWidth, rectHeight, Color.LightCoral));
+        rectangles.Add(new RectangleShape(rectX, rectY, rectWidth, rectHeight, Color.Gray));
         rectY = 500;
-        rectangles.Add(new RectangleShape(rectX, rectY, rectWidth, rectHeight, Color.LightSeaGreen));
+        rectangles.Add(new RectangleShape(rectX, rectY, rectWidth, rectHeight, Color.Gray));
 
 
         int borderX = rectX;
@@ -219,12 +219,12 @@ public class TuioDemo : Form, TuioListener
         rectHeight = 50;
         rectX = width / 2 - 375;
         rectY = 850;
-        rectangles.Add(new RectangleShape(rectX, rectY, rectWidth, rectHeight, Color.LightGreen));
+        rectangles.Add(new RectangleShape(rectX, rectY, rectWidth, rectHeight, Color.Gray));
         rectX = rectX + 250;
-        rectangles.Add(new RectangleShape(rectX, rectY, rectWidth, rectHeight, Color.LightPink));
+        rectangles.Add(new RectangleShape(rectX, rectY, rectWidth, rectHeight, Color.Gray));
 
         rectX = rectX + 250;
-        rectangles.Add(new RectangleShape(rectX, rectY, rectWidth, rectHeight, Color.LightYellow));
+        rectangles.Add(new RectangleShape(rectX, rectY, rectWidth, rectHeight, Color.Gray));
 
 
         borderX = width / 2 - 375;
@@ -238,9 +238,9 @@ public class TuioDemo : Form, TuioListener
         rectHeight = 250;
         rectX = width - 200;
         rectY = 250;
-        rectangles.Add(new RectangleShape(rectX, rectY, rectWidth, rectHeight, Color.LightBlue));
+        rectangles.Add(new RectangleShape(rectX, rectY, rectWidth, rectHeight, Color.Gray));
         rectY = 500;
-        rectangles.Add(new RectangleShape(rectX, rectY, rectWidth, rectHeight, Color.LightSalmon));
+        rectangles.Add(new RectangleShape(rectX, rectY, rectWidth, rectHeight, Color.Gray));
 
         borderX = rectX;
         borderY = 250;
@@ -522,12 +522,14 @@ public class TuioDemo : Form, TuioListener
                     switch (tobj.SymbolID)
                     {
 
-                        case 3:
+                        case 0:
                             yaxis = tobj.Y * ClientSize.Height;
                             Xaxis = tobj.X * ClientSize.Width;//from 0 to 1
                             if (yaxis >= rectangles[7].Y && yaxis <= rectangles[7].Y + rectangles[7].Height && Xaxis >= rectangles[7].X && Xaxis <= rectangles[7].X + rectangles[7].Width)
                             {
                                 Gender = 1;
+                                rectangles[7].Color = Color.Cyan;
+                                rectangles[8].Color = Color.Gray;
 
                             }
                             else
@@ -535,6 +537,8 @@ public class TuioDemo : Form, TuioListener
                                 if (yaxis >= rectangles[8].Y && yaxis <= rectangles[8].Y + rectangles[8].Height && Xaxis >= rectangles[8].X && Xaxis <= rectangles[8].X + rectangles[8].Width)
                                 {
                                     Gender = 0;
+                                    rectangles[7].Color = Color.Gray;
+                                    rectangles[8].Color = Color.Pink;
                                 }
 
                             }
@@ -542,72 +546,101 @@ public class TuioDemo : Form, TuioListener
                             this.Text = genderText;
                             break;
 
-                        case 4:
+                        case 1:
 
                             yaxis = tobj.Y * ClientSize.Height;
                             Xaxis = tobj.X * ClientSize.Width;
                             if (yaxis >= rectangles[0].Y && yaxis <= rectangles[0].Y + rectangles[0].Height && Xaxis >= rectangles[0].X && Xaxis <= rectangles[0].X + rectangles[0].Width)
                             {
                                 age = 1;
-
+                                rectangles[0].Color = Color.Red;
+                                rectangles[1].Color = Color.Gray;
                             }
                             else
                             {
                                 if(yaxis >= rectangles[1].Y && yaxis <= rectangles[1].Y + rectangles[1].Height && Xaxis >= rectangles[1].X && Xaxis <= rectangles[1].X + rectangles[1].Width)
-                                age = 0;
-
+                                {age = 0;
+                                    rectangles[0].Color = Color.Gray;
+                                    rectangles[1].Color = Color.Yellow;
+                                }
                             }
                             ageText = age == 0 ? "Teen" : "Adult";
                             this.Text = ageText;
                             break;
 
-                        case 5:
+                        case 2:
 
                             yaxis = tobj.Y * ClientSize.Height;
                             Xaxis = tobj.X * ClientSize.Width;//x axis from 0 to 1 
                             if (yaxis >= rectangles[3].Y && yaxis <= rectangles[3].Y + rectangles[3].Height && Xaxis >= rectangles[3].X && Xaxis <= rectangles[3].X + rectangles[3].Width)
                             {
                                 skin_type = 0;
+                                rectangles[3].Color = Color.Brown;
+                                rectangles[4].Color = Color.Gray;
+                                rectangles[5].Color = Color.Gray;
 
                             }
                             else if (yaxis >= rectangles[4].Y && yaxis <= rectangles[4].Y + rectangles[4].Height && Xaxis >= rectangles[4].X && Xaxis <= rectangles[4].X + rectangles[4].Width)
                             {
                                 skin_type = 1;
+                                rectangles[3].Color = Color.Gray;
+                                rectangles[4].Color = Color.Beige;
+                                rectangles[5].Color = Color.Gray;
 
                             }
                             else if (yaxis >= rectangles[5].Y && yaxis <= rectangles[5].Y + rectangles[5].Height && Xaxis >= rectangles[5].X && Xaxis <= rectangles[5].X + rectangles[5].Width)
                             {
                                 skin_type = 2;
+                                rectangles[3].Color = Color.Gray;
+                                rectangles[4].Color = Color.Gray;
+                                rectangles[5].Color = Color.Gold;
 
                             }
                             skinTypeText = skin_type == 0 ? "Dry skin" : skin_type == 1 ? "Normal skin" : "Oily skin";
                             this.Text = skinTypeText;
                             break;
-                        case 6:
+                        case 3:
                             yaxis = tobj.Y * ClientSize.Height;
                             Xaxis = tobj.X * ClientSize.Width;
-                            if (tobj.Angle / Math.PI * 180.0f > 0 && tobj.Angle / Math.PI * 180.0f < 120)
+                             if (yaxis >= circles[3].Y && yaxis <= circles[3].Y + circles[3].Height && Xaxis >= circles[3].X && Xaxis <= circles[3].X + circles[3].Width)
+                           { if (tobj.Angle / Math.PI * 180.0f > 0 && tobj.Angle / Math.PI * 180.0f < 90)
                             {
                                 objectImagePath = Path.Combine(Environment.CurrentDirectory, "1.png");
                                 backgroundImagePath = Path.Combine(Environment.CurrentDirectory, "2.png");
                                 Text = "product 1";
+                                circles[0].Color = Color.PaleVioletRed;
+                                circles[1].Color = Color.Gray;
+                                circles[2].Color = Color.Gray;
                                 Console.WriteLine(tobj.Angle / Math.PI * 180.0f);
 
                             }
 
-                            if (tobj.Angle / Math.PI * 120 > 120 && tobj.Angle / Math.PI * 180.0f < 240)
+                            if (tobj.Angle / Math.PI * 180.0f > 120 && tobj.Angle / Math.PI * 180.0f < 180)
                             {
                                 objectImagePath = Path.Combine(Environment.CurrentDirectory, "1.png");
                                 backgroundImagePath = Path.Combine(Environment.CurrentDirectory, "3.png");
                                 Text = "product 2";
+                                circles[0].Color = Color.Gray;
+                                circles[1].Color = Color.PaleVioletRed;
+                                circles[2].Color = Color.Gray;
                                 Console.WriteLine(tobj.Angle / Math.PI * 180.0f);
                             }
-                            if (tobj.Angle / Math.PI * 180.0f > 240 && tobj.Angle / Math.PI * 180.0f < 360)
+                            if (tobj.Angle / Math.PI * 180.0f > 240 && tobj.Angle / Math.PI * 180.0f < 270)
                             {
                                 objectImagePath = Path.Combine(Environment.CurrentDirectory, "1.png");
                                 backgroundImagePath = Path.Combine(Environment.CurrentDirectory, "4.png");
                                 Text = "product 3";
+                                circles[0].Color = Color.Gray;
+                                circles[1].Color = Color.Gray;
+                                circles[2].Color = Color.PaleVioletRed;
                                 Console.WriteLine(tobj.Angle / Math.PI * 180.0f);
+                            }
+                            if (tobj.Angle / Math.PI * 180.0f > 270 && tobj.Angle / Math.PI * 180.0f < 360)
+                            {
+                                circles[0].Color = Color.Gray;
+                                circles[1].Color = Color.Gray;
+                                circles[2].Color = Color.Gray;
+                            }
                             }
                             this.Text = Text;
                             break;
@@ -617,7 +650,7 @@ public class TuioDemo : Form, TuioListener
                             g.FillRectangle(objBrush, new Rectangle(ox - size / 2, oy - size / 2, size, size));
                             g.DrawString(tobj.SymbolID + "", font, fntBrush, new PointF(ox - 10, oy - 10));
                             break;
-                    }
+                          }
 
 
                     try
