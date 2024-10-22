@@ -523,15 +523,19 @@ public class TuioDemo : Form, TuioListener
                     {
 
                         case 3:
-                            yaxis = tobj.Y * ClientSize.Height;//from 0 to 1
+                            yaxis = tobj.Y * ClientSize.Height;
+                            Xaxis = tobj.X * ClientSize.Width;//from 0 to 1
                             if (yaxis >= rectangles[7].Y && yaxis <= rectangles[7].Y + rectangles[7].Height && Xaxis >= rectangles[7].X && Xaxis <= rectangles[7].X + rectangles[7].Width)
                             {
-                                Gender = 0;
+                                Gender = 1;
 
                             }
                             else
                             {
-                                Gender = 1;
+                                if (yaxis >= rectangles[8].Y && yaxis <= rectangles[8].Y + rectangles[8].Height && Xaxis >= rectangles[8].X && Xaxis <= rectangles[8].X + rectangles[8].Width)
+                                {
+                                    Gender = 0;
+                                }
 
                             }
                             genderText = Gender == 0 ? "Female" : "Male";
@@ -541,14 +545,16 @@ public class TuioDemo : Form, TuioListener
                         case 4:
 
                             yaxis = tobj.Y * ClientSize.Height;
-                            if (yaxis < ClientSize.Width / 2)
+                            Xaxis = tobj.X * ClientSize.Width;
+                            if (yaxis >= rectangles[0].Y && yaxis <= rectangles[0].Y + rectangles[0].Height && Xaxis >= rectangles[0].X && Xaxis <= rectangles[0].X + rectangles[0].Width)
                             {
-                                age = 0;
+                                age = 1;
 
                             }
                             else
                             {
-                                age = 1;
+                                if(yaxis >= rectangles[1].Y && yaxis <= rectangles[1].Y + rectangles[1].Height && Xaxis >= rectangles[1].X && Xaxis <= rectangles[1].X + rectangles[1].Width)
+                                age = 0;
 
                             }
                             ageText = age == 0 ? "Teen" : "Adult";
@@ -557,18 +563,19 @@ public class TuioDemo : Form, TuioListener
 
                         case 5:
 
+                            yaxis = tobj.Y * ClientSize.Height;
                             Xaxis = tobj.X * ClientSize.Width;//x axis from 0 to 1 
-                            if (Xaxis < ClientSize.Width / 3)
+                            if (yaxis >= rectangles[3].Y && yaxis <= rectangles[3].Y + rectangles[3].Height && Xaxis >= rectangles[3].X && Xaxis <= rectangles[3].X + rectangles[3].Width)
                             {
                                 skin_type = 0;
 
                             }
-                            else if (Xaxis > ClientSize.Width / 3 && Xaxis < (ClientSize.Width / 3) * 2)
+                            else if (yaxis >= rectangles[4].Y && yaxis <= rectangles[4].Y + rectangles[4].Height && Xaxis >= rectangles[4].X && Xaxis <= rectangles[4].X + rectangles[4].Width)
                             {
                                 skin_type = 1;
 
                             }
-                            else if (Xaxis > (ClientSize.Width / 3) * 2)
+                            else if (yaxis >= rectangles[5].Y && yaxis <= rectangles[5].Y + rectangles[5].Height && Xaxis >= rectangles[5].X && Xaxis <= rectangles[5].X + rectangles[5].Width)
                             {
                                 skin_type = 2;
 
@@ -577,7 +584,8 @@ public class TuioDemo : Form, TuioListener
                             this.Text = skinTypeText;
                             break;
                         case 6:
-
+                            yaxis = tobj.Y * ClientSize.Height;
+                            Xaxis = tobj.X * ClientSize.Width;
                             if (tobj.Angle / Math.PI * 180.0f > 0 && tobj.Angle / Math.PI * 180.0f < 120)
                             {
                                 objectImagePath = Path.Combine(Environment.CurrentDirectory, "1.png");
