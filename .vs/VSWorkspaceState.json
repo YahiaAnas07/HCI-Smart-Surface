@@ -1,9 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\TUIO11_NET-master",
-    "\\TUIO11_NET-master\\OSC.NET"
+    "\\TUIO11_NET-master"
   ],
-  "SelectedNode": "\\TUIO11_NET-master\\OSC.NET\\OSCReceiver.cs",
+  "SelectedNode": "\\TUIO11_NET-master\\TuioDemo.cs",
   "PreviewInSolutionExplorer": false
 }
