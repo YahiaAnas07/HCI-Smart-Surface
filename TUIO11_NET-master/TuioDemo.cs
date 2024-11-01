@@ -79,13 +79,16 @@ public class Circle
 	public int Height { get; set; }
 	public Color Color { get; set; }
 
-	public Circle(float x, float y, int width, int height, Color color)
+	public bool Show { get; set; }
+
+	public Circle(float x, float y, int width, int height, Color color, bool show = false)
 	{
 		X = x;
 		Y = y;
 		Width = width;
 		Height = height;
 		Color = color;
+		Show = show;
 	}
 }
 // Define the RectangleShape class
@@ -97,13 +100,17 @@ public class RectangleShape
 	public int Height { get; set; }
 	public Color Color { get; set; }
 
-	public RectangleShape(float x, float y, int width, int height, Color color)
+	public bool Show { get; set; }
+
+	public RectangleShape(float x, float y, int width, int height, Color color,bool show=false)
 	{
 		X = x;
 		Y = y;
 		Width = width;
 		Height = height;
 		Color = color;
+		Show = show;
+
 	}
 }
 
@@ -114,6 +121,7 @@ public class TuioDemo : Form, TuioListener
 	private Dictionary<long, TuioCursor> cursorList;
 	private Dictionary<long, TuioBlob> blobList;
 	public int currentScreen = 1;
+	public bool openMenu = false;
 	public static int width, height;
 	private int window_width = 640;
 	private int window_height = 480;
@@ -199,6 +207,8 @@ public class TuioDemo : Form, TuioListener
 
 
 		circles.Add(new Circle(width - 230, 800, 100, 100, Color.Teal));
+
+		circles.Add(new Circle(100, 100, 100, 100, Color.Teal));
 
 
 		int rectWidth = 50;
@@ -508,6 +518,7 @@ public class TuioDemo : Form, TuioListener
 		}
 		
 		else { 
+
 			g.FillEllipse(Brushes.Black, (finger.X * width), (finger.Y * height), 15, 15);
 
 		   
@@ -729,9 +740,27 @@ public class TuioDemo : Form, TuioListener
 							}
 							}
 							this.Text = Text;
-							break;
+								break;
+					///Open Menu
+					case 4:
+								yaxis = tobj.Y * ClientSize.Height;
+								Xaxis = tobj.X * ClientSize.Width;
+								if (yaxis >= circles[5].Y && yaxis <= circles[5].Y + circles[5].Height && Xaxis >= circles[5].X && Xaxis <= circles[5].X + circles[5].Width)
+                                {
+									openMenu = true;
+                                }
+								break;
+					///close Menu
+					case 5:
+						yaxis = tobj.Y * ClientSize.Height;
+						Xaxis = tobj.X * ClientSize.Width;
+						if (yaxis >= circles[5].Y && yaxis <= circles[5].Y + circles[5].Height && Xaxis >= circles[5].X && Xaxis <= circles[5].X + circles[5].Width)
+						{
+							openMenu = false;
+						}
+						break;
 
-						default:
+							default:
 
 							g.FillRectangle(objBrush, new Rectangle(ox - size / 2, oy - size / 2, size, size));
 							g.DrawString(tobj.SymbolID + "", font, fntBrush, new PointF(ox - 10, oy - 10));
