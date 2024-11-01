@@ -469,7 +469,7 @@ public class TuioDemo : Form, TuioListener
 
 			// Create the rounded rectangle path
 			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
-			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(150,Color.Green)))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200,Color.Green)))
 			using (Pen borderPen = new Pen(Color.Black, 2))
 			{
 				// Fill the rounded rectangle
