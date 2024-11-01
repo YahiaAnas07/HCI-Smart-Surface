@@ -186,12 +186,14 @@ public class TuioDemo : Form, TuioListener
 		width = this.ClientSize.Width;
 		height = this.ClientSize.Height;
 		robot = Image.FromFile("robot.png");
-
+		//Section 1: Products
 		int circleDiameter = 200;
 		int circleY = 100;
-		circles.Add(new Circle((width / 4) - (circleDiameter / 2), circleY, circleDiameter, circleDiameter, Color.Gray));
-		circles.Add(new Circle((width / 2) - (circleDiameter / 2), circleY, circleDiameter, circleDiameter, Color.Gray));
-		circles.Add(new Circle((3 * width / 4) - (circleDiameter / 2), circleY, circleDiameter, circleDiameter, Color.Gray));
+		circles.Add(new Circle((width / 2) - (circleDiameter / 2) - 200, circleY+50, circleDiameter-50, circleDiameter-50, Color.Gray));
+		circles.Add(new Circle((width / 2) - (circleDiameter / 2), circleY, circleDiameter, circleDiameter, Color.LightGoldenrodYellow));
+		circles.Add(new Circle((width / 2) - (circleDiameter / 2) + 250, circleY+50, circleDiameter-50, circleDiameter-50, Color.Gray));
+
+		//Section 1 END
 
 		circles.Add(new Circle((width / 2) - (300 / 2), height / 2 - 300/ 2, 300, 300, Color.Teal));
 
