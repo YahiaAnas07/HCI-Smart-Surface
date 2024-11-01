@@ -10,9 +10,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace questionnaire
+namespace Questionnaire
 {
-    public partial class Form1 : Form
+    public partial class Questionnaire : Form
     {
         private Client c;
         Bitmap off;
@@ -27,15 +27,39 @@ namespace questionnaire
         Dictionary<(int, int), float> hoverDurations = new Dictionary<(int, int), float>();
         const float requiredHoverTime = 1000;
 
-        public Form1()
+        public Questionnaire()
         {
-            InitializeComponent();
-            this.Paint += Form1_Paint;
+     
+           
+            this.Paint += Questionnaire_Paint;
             this.WindowState = FormWindowState.Maximized;
+            this.Load += Questionnaire_Load;
             tt.Tick += Tt_Tick;
             tt.Interval = 100;
             tt.Start();
+
         }
+
+        private void Questionnaire_Paint(object sender, PaintEventArgs e)
+        {
+            DrawDubb(e.Graphics);
+        }
+
+        private void Questionnaire_Load(object sender, EventArgs e)
+        {
+            if (off == null || off.Size != this.ClientSize)
+            {
+                off = new Bitmap(this.ClientSize.Width, this.ClientSize.Height);
+            }
+            width = this.ClientSize.Width;
+            height = this.ClientSize.Height;
+
+            Thread clientThread = new Thread(StartClient);
+            clientThread.IsBackground = true;
+            clientThread.Start();
+            create_boxes();
+        }
+
         void DrawDubb(Graphics g)
         {
             Graphics g2 = Graphics.FromImage(off);
@@ -172,6 +196,7 @@ namespace questionnaire
         private void Tt_Tick(object sender, EventArgs e)
         {
             pointer();
+            this.Text = finger.X.ToString();
             DrawDubb(this.CreateGraphics());
         }
         void create_boxes()
@@ -198,24 +223,9 @@ namespace questionnaire
         }
 
 
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
-            DrawDubb(e.Graphics);
-        }
+       
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            if (off == null)
-            {
-                off = new Bitmap(this.ClientSize.Width, this.ClientSize.Height);
-            }
-            width = this.ClientSize.Width;
-            height = this.ClientSize.Height;
-            Thread clientThread = new Thread(StartClient);
-            clientThread.IsBackground = true;
-            clientThread.Start();
-            create_boxes();
-        }
+     
         private void StartClient()
         {
             c = new Client();
@@ -233,7 +243,7 @@ namespace questionnaire
                 string[] coords = msg.Split(',');
                 finger.X = float.Parse(coords[0]);
                 finger.Y = float.Parse(coords[1]);
-
+                Console.WriteLine(coords[0]);
             }
         }
     }

@@ -260,31 +260,31 @@ public class TuioDemo : Form, TuioListener
 		borderHeight = rectHeight * 2;
 		rectangles.Add(new RectangleShape(borderX, borderY, borderWidth, borderHeight, Color.Transparent));
 
-		Thread clientThread = new Thread(StartClient);
-		clientThread.IsBackground = true;
-		clientThread.Start();
+		//Thread clientThread = new Thread(StartClient);
+		//clientThread.IsBackground = true;
+		//clientThread.Start();
 	}
-	private void StartClient()
-	{
-		c = new Client();
-		if (c.connectToSocket("localhost", 5000))
-		{
-			Stream();
-		}
-	}
+	//private void StartClient()
+	//{
+	//	c = new Client();
+	//	if (c.connectToSocket("localhost", 5000))
+	//	{
+	//		Stream();
+	//	}
+	//}
 
-	public void Stream()
-	{
-		string msg = "";
-		while (true)
-		{
-			msg = c.receiveMessage();
-			string[] coords = msg.Split(',');
-			finger.X = float.Parse(coords[0]);
-			finger.Y = float.Parse(coords[1]);
-			Console.WriteLine(coords[0]);
-		}
-	}
+	//public void Stream()
+	//{
+	//	string msg = "";
+	//	while (true)
+	//	{
+	//		msg = c.receiveMessage();
+	//		string[] coords = msg.Split(',');
+	//		finger.X = float.Parse(coords[0]);
+	//		finger.Y = float.Parse(coords[1]);
+	//		Console.WriteLine(coords[0]);
+	//	}
+	//}
 
 
 	private void Form_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
@@ -333,6 +333,12 @@ public class TuioDemo : Form, TuioListener
 		{
 			verbose = !verbose;
 		}
+		else if(e.KeyData==Keys.Q)
+        {
+			Questionnaire.Questionnaire questionnaireForm = new Questionnaire.Questionnaire();
+			questionnaireForm.Show();
+			this.Hide();
+        }
 
 	}
 
