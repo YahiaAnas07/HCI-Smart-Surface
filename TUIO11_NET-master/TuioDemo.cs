@@ -113,7 +113,7 @@ public class TuioDemo : Form, TuioListener
 	private Dictionary<long, TuioObject> objectList;
 	private Dictionary<long, TuioCursor> cursorList;
 	private Dictionary<long, TuioBlob> blobList;
-	public int currentScreen = 0;
+	public int currentScreen = 1;
 	public static int width, height;
 	private int window_width = 640;
 	private int window_height = 480;
