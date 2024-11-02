@@ -80,8 +80,9 @@ public class Circle
 	public Color Color { get; set; }
 
 	public bool Show { get; set; }
+	public string Text { get; set; }
 
-	public Circle(float x, float y, int width, int height, Color color, bool show = false)
+	public Circle(float x, float y, int width, int height, Color color, string text = "", bool show = false)
 	{
 		X = x;
 		Y = y;
@@ -89,6 +90,7 @@ public class Circle
 		Height = height;
 		Color = color;
 		Show = show;
+		Text = text;
 	}
 }
 // Define the RectangleShape class
@@ -101,8 +103,9 @@ public class RectangleShape
 	public Color Color { get; set; }
 
 	public bool Show { get; set; }
+	public string Text { get; set; }
 
-	public RectangleShape(float x, float y, int width, int height, Color color,bool show=false)
+	public RectangleShape(float x, float y, int width, int height, Color color, string text = "", bool show = false)
 	{
 		X = x;
 		Y = y;
@@ -110,7 +113,7 @@ public class RectangleShape
 		Height = height;
 		Color = color;
 		Show = show;
-
+		Text = text;
 	}
 }
 
@@ -152,7 +155,7 @@ public class TuioDemo : Form, TuioListener
 	string genderText = "";
 	string ageText = "";
 	string skinTypeText = "";
-	Image robot; 
+	Image robot;
 
 	public TuioDemo(int port)
 	{
@@ -197,18 +200,26 @@ public class TuioDemo : Form, TuioListener
 		//Section 1: Products
 		int circleDiameter = 200;
 		int circleY = 100;
-		circles.Add(new Circle((width / 2) - (circleDiameter / 2) - 200, circleY+50, circleDiameter-50, circleDiameter-50, Color.Gray));
+		circles.Add(new Circle((width / 2) - (circleDiameter / 2) - 200, circleY + 50, circleDiameter - 50, circleDiameter - 50, Color.Gray));
 		circles.Add(new Circle((width / 2) - (circleDiameter / 2), circleY, circleDiameter, circleDiameter, Color.LightGoldenrodYellow));
-		circles.Add(new Circle((width / 2) - (circleDiameter / 2) + 250, circleY+50, circleDiameter-50, circleDiameter-50, Color.Gray));
+		circles.Add(new Circle((width / 2) - (circleDiameter / 2) + 250, circleY + 50, circleDiameter - 50, circleDiameter - 50, Color.Gray));
 
 		//Section 1 END
 
-		circles.Add(new Circle((width / 2) - (300 / 2), height / 2 - 300/ 2, 300, 300, Color.Teal));
+		circles.Add(new Circle((width / 2) - (300 / 2), height / 2 - 300 / 2, 300, 300, Color.Teal));
 
 
 		circles.Add(new Circle(width - 230, 800, 100, 100, Color.Teal));
 
-		circles.Add(new Circle(100, 100, 100, 100, Color.Teal));
+		circles.Add(new Circle(100, 100, 100, 100, Color.Teal, "", true));
+		///Products
+		int x = this.ClientSize.Width / 2;
+		int y = this.ClientSize.Height / 2;
+		int radius = 50;
+		Rectangle centralRect = new Rectangle(x - radius, y - radius, radius * 2, radius * 2);
+		circles.Add(new Circle(x, y, radius, radius, Color.LimeGreen));
+		g.DrawString("IMAGE OF PRODUCT", new Font("Arial", 8), Brushes.Black, x - radius / 2, y - 5);
+		///
 
 
 		int rectWidth = 50;
@@ -333,12 +344,12 @@ public class TuioDemo : Form, TuioListener
 		{
 			verbose = !verbose;
 		}
-		else if(e.KeyData==Keys.Q)
-        {
+		else if (e.KeyData == Keys.Q)
+		{
 			Questionnaire.Questionnaire questionnaireForm = new Questionnaire.Questionnaire();
 			questionnaireForm.Show();
 			this.Hide();
-        }
+		}
 
 	}
 
@@ -426,31 +437,31 @@ public class TuioDemo : Form, TuioListener
 		Invalidate();
 	}
 	private GraphicsPath GetRoundedRectanglePath(Rectangle rect, int radius)
-{
-    GraphicsPath path = new GraphicsPath();
+	{
+		GraphicsPath path = new GraphicsPath();
 
-    int diameter = radius * 2;
-    Size size = new Size(diameter, diameter);
-    Rectangle arc = new Rectangle(rect.Location, size);
+		int diameter = radius * 2;
+		Size size = new Size(diameter, diameter);
+		Rectangle arc = new Rectangle(rect.Location, size);
 
-    // Top-left corner
-    path.AddArc(arc, 180, 90);
+		// Top-left corner
+		path.AddArc(arc, 180, 90);
 
-    // Top-right corner
-    arc.X = rect.Right - diameter;
-    path.AddArc(arc, 270, 90);
+		// Top-right corner
+		arc.X = rect.Right - diameter;
+		path.AddArc(arc, 270, 90);
 
-    // Bottom-right corner
-    arc.Y = rect.Bottom - diameter;
-    path.AddArc(arc, 0, 90);
+		// Bottom-right corner
+		arc.Y = rect.Bottom - diameter;
+		path.AddArc(arc, 0, 90);
 
-    // Bottom-left corner
-    arc.X = rect.Left;
-    path.AddArc(arc, 90, 90);
+		// Bottom-left corner
+		arc.X = rect.Left;
+		path.AddArc(arc, 90, 90);
 
-    path.CloseFigure();
-    return path;
-}
+		path.CloseFigure();
+		return path;
+	}
 
 	protected override void OnPaintBackground(PaintEventArgs pevent)
 	{
@@ -459,19 +470,20 @@ public class TuioDemo : Form, TuioListener
 		g.FillRectangle(bgrBrush, new Rectangle(0, 0, width, height));
 		Text = $"{genderText} {ageText} {skinTypeText}";
 
-	  
-			// Use anti-aliasing to smooth graphics
-			g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-			g.Clear(Color.Pink);
+		// Use anti-aliasing to smooth graphics
+		g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-			if(currentScreen == 0) {
-			g.DrawImage(robot,550,200,700,700);
-			Rectangle rect2 = new Rectangle(screen_width-700, screen_height-380, 600, 200);
+		g.Clear(Color.Pink);
+
+		if (currentScreen == 0)
+		{
+			g.DrawImage(robot, 550, 200, 700, 700);
+			Rectangle rect2 = new Rectangle(screen_width - 700, screen_height - 380, 600, 200);
 			int radius2 = 20;
 			Font font2 = new Font("Tahoma", 36, FontStyle.Bold);
 			using (GraphicsPath path2 = GetRoundedRectanglePath(rect2, radius2))
-			using (SolidBrush fillBrush2 = new SolidBrush(Color.FromArgb(128,Color.White)))
+			using (SolidBrush fillBrush2 = new SolidBrush(Color.FromArgb(128, Color.White)))
 			using (Pen borderPen2 = new Pen(Color.Black, 2))
 			{
 				g.FillPath(fillBrush2, path2);
@@ -480,14 +492,14 @@ public class TuioDemo : Form, TuioListener
 				g.DrawPath(borderPen2, path2);
 
 			}
-			Rectangle rect = new Rectangle(screen_width-600, screen_height-300, 400, 100);
+			Rectangle rect = new Rectangle(screen_width - 600, screen_height - 300, 400, 100);
 			int radius = 20;
 			string text = "Start!";
 			Font font1 = new Font("Tahoma", 36, FontStyle.Bold);
 
 			// Create the rounded rectangle path
 			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
-			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200,Color.Green)))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.Green)))
 			using (Pen borderPen = new Pen(Color.Black, 2))
 			{
 				// Fill the rounded rectangle
@@ -511,348 +523,358 @@ public class TuioDemo : Form, TuioListener
 			{
 				g.DrawString("AI Skin Care Assistant", font, Brushes.Black, new RectangleF(100, 100, 800, 300));
 			}
-			using (Font font = new Font("Tahoma", 16, FontStyle.Italic)) 
-			{ 
+			using (Font font = new Font("Tahoma", 16, FontStyle.Italic))
+			{
 				g.DrawString("Your way to a clean and clear skin.", font, Brushes.Gray, new RectangleF(100, 200, 800, 600));
-				g.DrawString("To start please hover over the 'Start!' button with your hand",font, Brushes.Gray, new RectangleF(screen_width-690, screen_height-350,800,500));
+				g.DrawString("To start please hover over the 'Start!' button with your hand", font, Brushes.Gray, new RectangleF(screen_width - 690, screen_height - 350, 800, 500));
 			}
-			
-	
-		
-		
-		
+
+
+
+
+
 		}
-		
-		else { 
 
-			g.FillEllipse(Brushes.Black, (finger.X * width), (finger.Y * height), 15, 15);
+		else
+		{
 
-		   
+
+
+
 			foreach (Circle circle in circles)
 			{
-				using (Brush gradientBrush = new System.Drawing.Drawing2D.LinearGradientBrush(
-					new RectangleF(circle.X, circle.Y, circle.Width, circle.Height),
-					circle.Color, ControlPaint.Dark(circle.Color), 45f)) 
+				if (circle.Show)
 				{
-					g.FillEllipse(gradientBrush, circle.X, circle.Y, circle.Width, circle.Height);
+					using (Brush gradientBrush = new System.Drawing.Drawing2D.LinearGradientBrush(
+						new RectangleF(circle.X, circle.Y, circle.Width, circle.Height),
+						circle.Color, ControlPaint.Dark(circle.Color), 45f))
+					{
+
+						g.FillEllipse(gradientBrush, circle.X, circle.Y, circle.Width, circle.Height);
+					}
 				}
 			}
 
-		   
+
 			foreach (RectangleShape rectangle in rectangles)
 			{
-				if (rectangle.Color != Color.Transparent)
+				if (rectangle.Show)
 				{
-					
-					using (Brush gradientBrush = new System.Drawing.Drawing2D.LinearGradientBrush(
-						new RectangleF(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height),
-						rectangle.Color, ControlPaint.Dark(rectangle.Color), 45f))
+					if (rectangle.Color != Color.Transparent)
 					{
-						g.FillRectangle(gradientBrush, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
-					}
-				}
 
-			   
-				if (rectangle.Color == Color.Transparent)
-				{
-					using (Pen blackPen = new Pen(Color.Black, 3)) 
+						using (Brush gradientBrush = new System.Drawing.Drawing2D.LinearGradientBrush(
+							new RectangleF(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height),
+							rectangle.Color, ControlPaint.Dark(rectangle.Color), 45f))
+						{
+							g.FillRectangle(gradientBrush, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
+						}
+					}
+
+
+					if (rectangle.Color == Color.Transparent)
 					{
-						g.DrawRectangle(blackPen, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
+						using (Pen blackPen = new Pen(Color.Black, 3))
+						{
+							g.DrawRectangle(blackPen, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
+						}
 					}
 				}
 			}
 
 
 			using (Font font = new Font("Segoe UI", 16, FontStyle.Bold))
-			using (StringFormat format = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-			{
-				g.DrawString("Questionnaire", font, Brushes.Black, new RectangleF(circles[4].X -10, circles[4].Y + circles[4].Height+10 , circles[4].Width +120, 80));
-				g.DrawString("Rotate", font, Brushes.Black, new RectangleF(circles[3].X, circles[3].Y + circles[3].Height + 10, circles[3].Width, 30), format);
-				g.DrawString("Adult", font, Brushes.Black, rectangles[0].X + rectangles[0].Width + 10, rectangles[0].Y + rectangles[0].Height / 2 - 10);
-				g.DrawString("Teen", font, Brushes.Black, rectangles[1].X + rectangles[1].Width + 10, rectangles[1].Y + rectangles[1].Height / 2 - 10);
-				g.DrawString("Dry", font, Brushes.Black, new RectangleF(rectangles[3].X, rectangles[3].Y + rectangles[3].Height + 10, rectangles[3].Width, 30), format);
-				g.DrawString("Normal", font, Brushes.Black, new RectangleF(rectangles[4].X, rectangles[4].Y + rectangles[4].Height + 10, rectangles[4].Width, 30), format);
-				g.DrawString("Oily", font, Brushes.Black, new RectangleF(rectangles[5].X, rectangles[5].Y + rectangles[5].Height + 10, rectangles[5].Width, 30), format);
-				g.DrawString("Male", font, Brushes.Black, rectangles[7].X + rectangles[7].Width + 10, rectangles[7].Y + rectangles[7].Height / 2 - 10);
-				g.DrawString("Female", font, Brushes.Black, rectangles[8].X + rectangles[8].Width + 10, rectangles[8].Y + rectangles[8].Height / 2 - 10 );
-			}
-		
-		// draw the cursor path
-		if (cursorList.Count > 0)
-		{
-			lock (cursorList)
-			{
-				foreach (TuioCursor tcur in cursorList.Values)
-				{
-					List<TuioPoint> path = tcur.Path;
-					TuioPoint current_point = path[0];
+				//using (StringFormat format = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+				//{
+				//	g.DrawString("Questionnaire", font, Brushes.Black, new RectangleF(circles[4].X -10, circles[4].Y + circles[4].Height+10 , circles[4].Width +120, 80));
+				//	g.DrawString("Rotate", font, Brushes.Black, new RectangleF(circles[3].X, circles[3].Y + circles[3].Height + 10, circles[3].Width, 30), format);
+				//	g.DrawString("Adult", font, Brushes.Black, rectangles[0].X + rectangles[0].Width + 10, rectangles[0].Y + rectangles[0].Height / 2 - 10);
+				//	g.DrawString("Teen", font, Brushes.Black, rectangles[1].X + rectangles[1].Width + 10, rectangles[1].Y + rectangles[1].Height / 2 - 10);
+				//	g.DrawString("Dry", font, Brushes.Black, new RectangleF(rectangles[3].X, rectangles[3].Y + rectangles[3].Height + 10, rectangles[3].Width, 30), format);
+				//	g.DrawString("Normal", font, Brushes.Black, new RectangleF(rectangles[4].X, rectangles[4].Y + rectangles[4].Height + 10, rectangles[4].Width, 30), format);
+				//	g.DrawString("Oily", font, Brushes.Black, new RectangleF(rectangles[5].X, rectangles[5].Y + rectangles[5].Height + 10, rectangles[5].Width, 30), format);
+				//	g.DrawString("Male", font, Brushes.Black, rectangles[7].X + rectangles[7].Width + 10, rectangles[7].Y + rectangles[7].Height / 2 - 10);
+				//	g.DrawString("Female", font, Brushes.Black, rectangles[8].X + rectangles[8].Width + 10, rectangles[8].Y + rectangles[8].Height / 2 - 10 );
+				//}
 
-					for (int i = 0; i < path.Count; i++)
+				// draw the cursor path
+				if (cursorList.Count > 0)
+				{
+					lock (cursorList)
 					{
-						TuioPoint next_point = path[i];
-						g.DrawLine(curPen, current_point.getScreenX(width), current_point.getScreenY(height), next_point.getScreenX(width), next_point.getScreenY(height));
-						current_point = next_point;
+						foreach (TuioCursor tcur in cursorList.Values)
+						{
+							List<TuioPoint> path = tcur.Path;
+							TuioPoint current_point = path[0];
+
+							for (int i = 0; i < path.Count; i++)
+							{
+								TuioPoint next_point = path[i];
+								g.DrawLine(curPen, current_point.getScreenX(width), current_point.getScreenY(height), next_point.getScreenX(width), next_point.getScreenY(height));
+								current_point = next_point;
+							}
+							g.FillEllipse(curBrush, current_point.getScreenX(width) - height / 100, current_point.getScreenY(height) - height / 100, height / 50, height / 50);
+							g.DrawString(tcur.CursorID + "", font, fntBrush, new PointF(tcur.getScreenX(width) - 10, tcur.getScreenY(height) - 10));
+						}
 					}
-					g.FillEllipse(curBrush, current_point.getScreenX(width) - height / 100, current_point.getScreenY(height) - height / 100, height / 50, height / 50);
-					g.DrawString(tcur.CursorID + "", font, fntBrush, new PointF(tcur.getScreenX(width) - 10, tcur.getScreenY(height) - 10));
 				}
-			}
-		}
 
-		// draw the objects
-		if (objectList.Count > 0)
-		{
-			lock (objectList)
+			// draw the objects
+			if (objectList.Count > 0)
 			{
-				foreach (TuioObject tobj in objectList.Values)
+				lock (objectList)
 				{
-					string objectImagePath = "";
-					string backgroundImagePath = "";
-
-					int ox = tobj.getScreenX(width);
-					int oy = tobj.getScreenY(height);
-					int size = height / 10;
-
-					g.TranslateTransform(ox, oy);
-					g.RotateTransform((float)(tobj.Angle / Math.PI * 180.0f));
-					g.TranslateTransform(-ox, -oy);
-
-					g.FillRectangle(objBrush, new Rectangle(ox - size / 2, oy - size / 2, size, size));
-
-					g.TranslateTransform(ox, oy);
-					g.RotateTransform(-1 * (float)(tobj.Angle / Math.PI * 180.0f));
-					g.TranslateTransform(-ox, -oy);
-					switch (tobj.SymbolID)
+					foreach (TuioObject tobj in objectList.Values)
 					{
+						string objectImagePath = "";
+						string backgroundImagePath = "";
 
-						case 0:
-							yaxis = tobj.Y * ClientSize.Height;
-							Xaxis = tobj.X * ClientSize.Width;//from 0 to 1
-							if (yaxis >= rectangles[7].Y && yaxis <= rectangles[7].Y + rectangles[7].Height && Xaxis >= rectangles[7].X && Xaxis <= rectangles[7].X + rectangles[7].Width)
-							{
-								Gender = 1;
-								rectangles[7].Color = Color.Cyan;
-								rectangles[8].Color = Color.Gray;
+						int ox = tobj.getScreenX(width);
+						int oy = tobj.getScreenY(height);
+						int size = height / 10;
 
-							}
-							else
-							{
-								if (yaxis >= rectangles[8].Y && yaxis <= rectangles[8].Y + rectangles[8].Height && Xaxis >= rectangles[8].X && Xaxis <= rectangles[8].X + rectangles[8].Width)
+						g.TranslateTransform(ox, oy);
+						g.RotateTransform((float)(tobj.Angle / Math.PI * 180.0f));
+						g.TranslateTransform(-ox, -oy);
+
+						g.FillRectangle(objBrush, new Rectangle(ox - size / 2, oy - size / 2, size, size));
+
+						g.TranslateTransform(ox, oy);
+						g.RotateTransform(-1 * (float)(tobj.Angle / Math.PI * 180.0f));
+						g.TranslateTransform(-ox, -oy);
+						switch (tobj.SymbolID)
+						{
+
+							case 0:
+								yaxis = tobj.Y * ClientSize.Height;
+								Xaxis = tobj.X * ClientSize.Width;//from 0 to 1
+								if (yaxis >= rectangles[7].Y && yaxis <= rectangles[7].Y + rectangles[7].Height && Xaxis >= rectangles[7].X && Xaxis <= rectangles[7].X + rectangles[7].Width)
 								{
-									Gender = 0;
-									rectangles[7].Color = Color.Gray;
-									rectangles[8].Color = Color.Pink;
+									Gender = 1;
+									rectangles[7].Color = Color.Cyan;
+									rectangles[8].Color = Color.Gray;
+
 								}
+								else
+								{
+									if (yaxis >= rectangles[8].Y && yaxis <= rectangles[8].Y + rectangles[8].Height && Xaxis >= rectangles[8].X && Xaxis <= rectangles[8].X + rectangles[8].Width)
+									{
+										Gender = 0;
+										rectangles[7].Color = Color.Gray;
+										rectangles[8].Color = Color.Pink;
+									}
 
-							}
-							genderText = Gender == 0 ? "Female" : "Male";
-							this.Text = genderText;
-							break;
-
-						case 1:
-
-							yaxis = tobj.Y * ClientSize.Height;
-							Xaxis = tobj.X * ClientSize.Width;
-							if (yaxis >= rectangles[0].Y && yaxis <= rectangles[0].Y + rectangles[0].Height && Xaxis >= rectangles[0].X && Xaxis <= rectangles[0].X + rectangles[0].Width)
-							{
-								age = 1;
-								rectangles[0].Color = Color.Red;
-								rectangles[1].Color = Color.Gray;
-							}
-							else
-							{
-								if(yaxis >= rectangles[1].Y && yaxis <= rectangles[1].Y + rectangles[1].Height && Xaxis >= rectangles[1].X && Xaxis <= rectangles[1].X + rectangles[1].Width)
-								{age = 0;
-									rectangles[0].Color = Color.Gray;
-									rectangles[1].Color = Color.Yellow;
 								}
-							}
-							ageText = age == 0 ? "Teen" : "Adult";
-							this.Text = ageText;
-							break;
-
-						case 2:
-
-							yaxis = tobj.Y * ClientSize.Height;
-							Xaxis = tobj.X * ClientSize.Width;//x axis from 0 to 1 
-							if (yaxis >= rectangles[3].Y && yaxis <= rectangles[3].Y + rectangles[3].Height && Xaxis >= rectangles[3].X && Xaxis <= rectangles[3].X + rectangles[3].Width)
-							{
-								skin_type = 0;
-								rectangles[3].Color = Color.Brown;
-								rectangles[4].Color = Color.Gray;
-								rectangles[5].Color = Color.Gray;
-
-							}
-							else if (yaxis >= rectangles[4].Y && yaxis <= rectangles[4].Y + rectangles[4].Height && Xaxis >= rectangles[4].X && Xaxis <= rectangles[4].X + rectangles[4].Width)
-							{
-								skin_type = 1;
-								rectangles[3].Color = Color.Gray;
-								rectangles[4].Color = Color.Beige;
-								rectangles[5].Color = Color.Gray;
-
-							}
-							else if (yaxis >= rectangles[5].Y && yaxis <= rectangles[5].Y + rectangles[5].Height && Xaxis >= rectangles[5].X && Xaxis <= rectangles[5].X + rectangles[5].Width)
-							{
-								skin_type = 2;
-								rectangles[3].Color = Color.Gray;
-								rectangles[4].Color = Color.Gray;
-								rectangles[5].Color = Color.Gold;
-
-							}
-							skinTypeText = skin_type == 0 ? "Dry skin" : skin_type == 1 ? "Normal skin" : "Oily skin";
-							this.Text = skinTypeText;
-							break;
-						case 3:
-							yaxis = tobj.Y * ClientSize.Height;
-							Xaxis = tobj.X * ClientSize.Width;
-							 if (yaxis >= circles[3].Y && yaxis <= circles[3].Y + circles[3].Height && Xaxis >= circles[3].X && Xaxis <= circles[3].X + circles[3].Width)
-						   { if (tobj.Angle / Math.PI * 180.0f > 0 && tobj.Angle / Math.PI * 180.0f < 90)
-							{
-								objectImagePath = Path.Combine(Environment.CurrentDirectory, "1.png");
-								backgroundImagePath = Path.Combine(Environment.CurrentDirectory, "2.png");
-								Text = "product 1";
-								circles[0].Color = Color.PaleVioletRed;
-								circles[1].Color = Color.Gray;
-								circles[2].Color = Color.Gray;
-								Console.WriteLine(tobj.Angle / Math.PI * 180.0f);
-
-							}
-
-							if (tobj.Angle / Math.PI * 180.0f > 120 && tobj.Angle / Math.PI * 180.0f < 180)
-							{
-								objectImagePath = Path.Combine(Environment.CurrentDirectory, "1.png");
-								backgroundImagePath = Path.Combine(Environment.CurrentDirectory, "3.png");
-								Text = "product 2";
-								circles[0].Color = Color.Gray;
-								circles[1].Color = Color.PaleVioletRed;
-								circles[2].Color = Color.Gray;
-								Console.WriteLine(tobj.Angle / Math.PI * 180.0f);
-							}
-							if (tobj.Angle / Math.PI * 180.0f > 240 && tobj.Angle / Math.PI * 180.0f < 270)
-							{
-								objectImagePath = Path.Combine(Environment.CurrentDirectory, "1.png");
-								backgroundImagePath = Path.Combine(Environment.CurrentDirectory, "4.png");
-								Text = "product 3";
-								circles[0].Color = Color.Gray;
-								circles[1].Color = Color.Gray;
-								circles[2].Color = Color.PaleVioletRed;
-								Console.WriteLine(tobj.Angle / Math.PI * 180.0f);
-							}
-							if (tobj.Angle / Math.PI * 180.0f > 270 && tobj.Angle / Math.PI * 180.0f < 360)
-							{
-								circles[0].Color = Color.Gray;
-								circles[1].Color = Color.Gray;
-								circles[2].Color = Color.Gray;
-							}
-							}
-							this.Text = Text;
+								genderText = Gender == 0 ? "Female" : "Male";
+								this.Text = genderText;
 								break;
-					///Open Menu
-					case 4:
+
+							case 1:
+
+								yaxis = tobj.Y * ClientSize.Height;
+								Xaxis = tobj.X * ClientSize.Width;
+								if (yaxis >= rectangles[0].Y && yaxis <= rectangles[0].Y + rectangles[0].Height && Xaxis >= rectangles[0].X && Xaxis <= rectangles[0].X + rectangles[0].Width)
+								{
+									age = 1;
+									rectangles[0].Color = Color.Red;
+									rectangles[1].Color = Color.Gray;
+								}
+								else
+								{
+									if (yaxis >= rectangles[1].Y && yaxis <= rectangles[1].Y + rectangles[1].Height && Xaxis >= rectangles[1].X && Xaxis <= rectangles[1].X + rectangles[1].Width)
+									{
+										age = 0;
+										rectangles[0].Color = Color.Gray;
+										rectangles[1].Color = Color.Yellow;
+									}
+								}
+								ageText = age == 0 ? "Teen" : "Adult";
+								this.Text = ageText;
+								break;
+
+							case 2:
+
+								yaxis = tobj.Y * ClientSize.Height;
+								Xaxis = tobj.X * ClientSize.Width;//x axis from 0 to 1 
+								if (yaxis >= rectangles[3].Y && yaxis <= rectangles[3].Y + rectangles[3].Height && Xaxis >= rectangles[3].X && Xaxis <= rectangles[3].X + rectangles[3].Width)
+								{
+									skin_type = 0;
+									rectangles[3].Color = Color.Brown;
+									rectangles[4].Color = Color.Gray;
+									rectangles[5].Color = Color.Gray;
+
+								}
+								else if (yaxis >= rectangles[4].Y && yaxis <= rectangles[4].Y + rectangles[4].Height && Xaxis >= rectangles[4].X && Xaxis <= rectangles[4].X + rectangles[4].Width)
+								{
+									skin_type = 1;
+									rectangles[3].Color = Color.Gray;
+									rectangles[4].Color = Color.Beige;
+									rectangles[5].Color = Color.Gray;
+
+								}
+								else if (yaxis >= rectangles[5].Y && yaxis <= rectangles[5].Y + rectangles[5].Height && Xaxis >= rectangles[5].X && Xaxis <= rectangles[5].X + rectangles[5].Width)
+								{
+									skin_type = 2;
+									rectangles[3].Color = Color.Gray;
+									rectangles[4].Color = Color.Gray;
+									rectangles[5].Color = Color.Gold;
+
+								}
+								skinTypeText = skin_type == 0 ? "Dry skin" : skin_type == 1 ? "Normal skin" : "Oily skin";
+								this.Text = skinTypeText;
+								break;
+							case 3:
+								yaxis = tobj.Y * ClientSize.Height;
+								Xaxis = tobj.X * ClientSize.Width;
+								if (yaxis >= circles[3].Y && yaxis <= circles[3].Y + circles[3].Height && Xaxis >= circles[3].X && Xaxis <= circles[3].X + circles[3].Width)
+								{
+									if (tobj.Angle / Math.PI * 180.0f > 0 && tobj.Angle / Math.PI * 180.0f < 90)
+									{
+										objectImagePath = Path.Combine(Environment.CurrentDirectory, "1.png");
+										backgroundImagePath = Path.Combine(Environment.CurrentDirectory, "2.png");
+										Text = "product 1";
+										circles[0].Color = Color.PaleVioletRed;
+										circles[1].Color = Color.Gray;
+										circles[2].Color = Color.Gray;
+										Console.WriteLine(tobj.Angle / Math.PI * 180.0f);
+
+									}
+
+									if (tobj.Angle / Math.PI * 180.0f > 120 && tobj.Angle / Math.PI * 180.0f < 180)
+									{
+										objectImagePath = Path.Combine(Environment.CurrentDirectory, "1.png");
+										backgroundImagePath = Path.Combine(Environment.CurrentDirectory, "3.png");
+										Text = "product 2";
+										circles[0].Color = Color.Gray;
+										circles[1].Color = Color.PaleVioletRed;
+										circles[2].Color = Color.Gray;
+										Console.WriteLine(tobj.Angle / Math.PI * 180.0f);
+									}
+									if (tobj.Angle / Math.PI * 180.0f > 240 && tobj.Angle / Math.PI * 180.0f < 270)
+									{
+										objectImagePath = Path.Combine(Environment.CurrentDirectory, "1.png");
+										backgroundImagePath = Path.Combine(Environment.CurrentDirectory, "4.png");
+										Text = "product 3";
+										circles[0].Color = Color.Gray;
+										circles[1].Color = Color.Gray;
+										circles[2].Color = Color.PaleVioletRed;
+										Console.WriteLine(tobj.Angle / Math.PI * 180.0f);
+									}
+									if (tobj.Angle / Math.PI * 180.0f > 270 && tobj.Angle / Math.PI * 180.0f < 360)
+									{
+										circles[0].Color = Color.Gray;
+										circles[1].Color = Color.Gray;
+										circles[2].Color = Color.Gray;
+									}
+								}
+								this.Text = Text;
+								break;
+							///Open Menu
+							case 4:
 								yaxis = tobj.Y * ClientSize.Height;
 								Xaxis = tobj.X * ClientSize.Width;
 								if (yaxis >= circles[5].Y && yaxis <= circles[5].Y + circles[5].Height && Xaxis >= circles[5].X && Xaxis <= circles[5].X + circles[5].Width)
-                                {
+								{
 									openMenu = true;
-                                }
+								}
 								break;
-					///close Menu
-					case 5:
-						yaxis = tobj.Y * ClientSize.Height;
-						Xaxis = tobj.X * ClientSize.Width;
-						if (yaxis >= circles[5].Y && yaxis <= circles[5].Y + circles[5].Height && Xaxis >= circles[5].X && Xaxis <= circles[5].X + circles[5].Width)
-						{
-							openMenu = false;
-						}
-						break;
+							///close Menu
+							case 5:
+								yaxis = tobj.Y * ClientSize.Height;
+								Xaxis = tobj.X * ClientSize.Width;
+								if (yaxis >= circles[5].Y && yaxis <= circles[5].Y + circles[5].Height && Xaxis >= circles[5].X && Xaxis <= circles[5].X + circles[5].Width)
+								{
+									openMenu = false;
+								}
+								break;
 
 							default:
 
-							g.FillRectangle(objBrush, new Rectangle(ox - size / 2, oy - size / 2, size, size));
-							g.DrawString(tobj.SymbolID + "", font, fntBrush, new PointF(ox - 10, oy - 10));
-							break;
-						  }
+								g.FillRectangle(objBrush, new Rectangle(ox - size / 2, oy - size / 2, size, size));
+								g.DrawString(tobj.SymbolID + "", font, fntBrush, new PointF(ox - 10, oy - 10));
+								break;
+						}
 
 
-					try
-					{
-						// Draw background image without rotation
-						if (File.Exists(backgroundImagePath))
+						try
 						{
-							using (Image bgImage = Image.FromFile(backgroundImagePath))
+							// Draw background image without rotation
+							if (File.Exists(backgroundImagePath))
 							{
-								g.DrawImage(bgImage, new Rectangle(new Point(0, 0), new Size(width, height)));
+								using (Image bgImage = Image.FromFile(backgroundImagePath))
+								{
+									g.DrawImage(bgImage, new Rectangle(new Point(0, 0), new Size(width, height)));
+								}
+							}
+							else
+							{
+								Console.WriteLine($"Background image not found: {backgroundImagePath}");
+							}
+
+							// Draw object image with rotation
+							if (File.Exists(objectImagePath))
+							{
+								using (Image objectImage = Image.FromFile(objectImagePath))
+								{
+									// Save the current state of the graphics object
+									GraphicsState state = g.Save();
+
+									// Apply transformations for rotation
+									g.TranslateTransform(ox, oy);
+									g.RotateTransform((float)(tobj.Angle / Math.PI * 180.0f));
+									g.TranslateTransform(-ox, -oy);
+
+									// Draw the rotated object
+									g.DrawImage(objectImage, new Rectangle(ox - size / 2, oy - size / 2, size, size));
+
+									// Restore the graphics state
+									g.Restore(state);
+								}
+							}
+							else
+							{
+								Console.WriteLine($"Object image not found: {objectImagePath}");
+								// Fall back to drawing a rectangle
+								g.FillRectangle(objBrush, new Rectangle(ox - size / 2, oy - size / 2, size, size));
 							}
 						}
-						else
+						catch
 						{
-							Console.WriteLine($"Background image not found: {backgroundImagePath}");
+
 						}
 
-						// Draw object image with rotation
-						if (File.Exists(objectImagePath))
-						{
-							using (Image objectImage = Image.FromFile(objectImagePath))
-							{
-								// Save the current state of the graphics object
-								GraphicsState state = g.Save();
-
-								// Apply transformations for rotation
-								g.TranslateTransform(ox, oy);
-								g.RotateTransform((float)(tobj.Angle / Math.PI * 180.0f));
-								g.TranslateTransform(-ox, -oy);
-
-								// Draw the rotated object
-								g.DrawImage(objectImage, new Rectangle(ox - size / 2, oy - size / 2, size, size));
-
-								// Restore the graphics state
-								g.Restore(state);
-							}
-						}
-						else
-						{
-							Console.WriteLine($"Object image not found: {objectImagePath}");
-							// Fall back to drawing a rectangle
-							g.FillRectangle(objBrush, new Rectangle(ox - size / 2, oy - size / 2, size, size));
-						}
+						g.DrawString(tobj.SymbolID + "", font, fntBrush, new PointF(ox - 10, oy - 10));
 					}
-					catch
-					{
-
-					}
-
-					g.DrawString(tobj.SymbolID + "", font, fntBrush, new PointF(ox - 10, oy - 10));
 				}
 			}
-		}
 
-		// draw the blobs
-		if (blobList.Count > 0)
-		{
-
-			lock (blobList)
+			// draw the blobs
+			if (blobList.Count > 0)
 			{
-				foreach (TuioBlob tblb in blobList.Values)
+
+				lock (blobList)
 				{
-					int bx = tblb.getScreenX(width);
-					int by = tblb.getScreenY(height);
-					float bw = tblb.Width * width;
-					float bh = tblb.Height * height;
+					foreach (TuioBlob tblb in blobList.Values)
+					{
+						int bx = tblb.getScreenX(width);
+						int by = tblb.getScreenY(height);
+						float bw = tblb.Width * width;
+						float bh = tblb.Height * height;
 
-					g.TranslateTransform(bx, by);
-					g.RotateTransform((float)(tblb.Angle / Math.PI * 180.0f));
-					g.TranslateTransform(-bx, -by);
+						g.TranslateTransform(bx, by);
+						g.RotateTransform((float)(tblb.Angle / Math.PI * 180.0f));
+						g.TranslateTransform(-bx, -by);
 
-					g.FillEllipse(blbBrush, bx - bw / 2, by - bh / 2, bw, bh);
+						g.FillEllipse(blbBrush, bx - bw / 2, by - bh / 2, bw, bh);
 
-					g.TranslateTransform(bx, by);
-					g.RotateTransform(-1 * (float)(tblb.Angle / Math.PI * 180.0f));
-					g.TranslateTransform(-bx, -by);
+						g.TranslateTransform(bx, by);
+						g.RotateTransform(-1 * (float)(tblb.Angle / Math.PI * 180.0f));
+						g.TranslateTransform(-bx, -by);
 
-					g.DrawString(tblb.BlobID + "", font, fntBrush, new PointF(bx, by));
+						g.DrawString(tblb.BlobID + "", font, fntBrush, new PointF(bx, by));
+					}
 				}
 			}
-		}
 		}
 	}
 
