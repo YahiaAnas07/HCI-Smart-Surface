@@ -123,7 +123,7 @@ public class TuioDemo : Form, TuioListener
 	private Dictionary<long, TuioObject> objectList;
 	private Dictionary<long, TuioCursor> cursorList;
 	private Dictionary<long, TuioBlob> blobList;
-	public int currentScreen = 1;
+	public int currentScreen = 0;
 	public bool openMenu = false;
 	public static int width, height;
 	private int window_width = 640;
@@ -134,6 +134,7 @@ public class TuioDemo : Form, TuioListener
 	private int screen_height = Screen.PrimaryScreen.Bounds.Height;
 	List<Circle> circles = new List<Circle>();
 	List<RectangleShape> rectangles = new List<RectangleShape>();
+
 	private Client c;
 	Bitmap off;
 	PointF finger = new PointF();
@@ -218,7 +219,6 @@ public class TuioDemo : Form, TuioListener
 		int radius = 50;
 		Rectangle centralRect = new Rectangle(x - radius, y - radius, radius * 2, radius * 2);
 		circles.Add(new Circle(x, y, radius, radius, Color.LimeGreen));
-		g.DrawString("IMAGE OF PRODUCT", new Font("Arial", 8), Brushes.Black, x - radius / 2, y - 5);
 		///
 
 
@@ -270,6 +270,9 @@ public class TuioDemo : Form, TuioListener
 		borderWidth = rectWidth;
 		borderHeight = rectHeight * 2;
 		rectangles.Add(new RectangleShape(borderX, borderY, borderWidth, borderHeight, Color.Transparent));
+
+
+
 
 		//Thread clientThread = new Thread(StartClient);
 		//clientThread.IsBackground = true;
@@ -339,6 +342,14 @@ public class TuioDemo : Form, TuioListener
 		{
 			this.Close();
 
+		}
+		else if (e.KeyData == Keys.Up)
+		{
+			currentScreen++;
+		}
+		else if (e.KeyData == Keys.Down)
+		{
+			currentScreen--;
 		}
 		else if (e.KeyData == Keys.V)
 		{
@@ -474,7 +485,7 @@ public class TuioDemo : Form, TuioListener
 		// Use anti-aliasing to smooth graphics
 		g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-		g.Clear(Color.Pink);
+		g.Clear(Color.WhiteSmoke);
 
 		if (currentScreen == 0)
 		{
@@ -525,8 +536,8 @@ public class TuioDemo : Form, TuioListener
 			}
 			using (Font font = new Font("Tahoma", 16, FontStyle.Italic))
 			{
-				g.DrawString("Your way to a clean and clear skin.", font, Brushes.Gray, new RectangleF(100, 200, 800, 600));
-				g.DrawString("To start please hover over the 'Start!' button with your hand", font, Brushes.Gray, new RectangleF(screen_width - 690, screen_height - 350, 800, 500));
+				g.DrawString("Your way to a clean and clear skin.", font, Brushes.Black, new RectangleF(100, 200, 800, 600));
+				g.DrawString("To start please hover over the 'Start!' button with your hand", font, Brushes.Black, new RectangleF(screen_width - 690, screen_height - 350, 800, 500));
 			}
 
 
@@ -534,7 +545,193 @@ public class TuioDemo : Form, TuioListener
 
 
 		}
+		else if(currentScreen==1){
 
+
+
+			Rectangle rect = new Rectangle(screen_width/2-600, 300, 500, 500);
+			int radius = 20;
+			Image image = Image.FromFile("male-white.png");
+
+			// Calculate the position to center the image within the rectangle
+			int imageX = rect.X + (rect.Width - image.Width) / 2;
+			int imageY = rect.Y + (rect.Height - image.Height) / 2;
+
+			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.Turquoise)))
+			{
+				// Fill the rounded rectangle
+				g.FillPath(fillBrush, path);
+
+				// Draw the image at the calculated position
+				g.DrawImage(image, imageX, imageY, image.Width, image.Height);
+			}
+
+			rect = new Rectangle(screen_width/2+100, 300, 500, 500);
+			radius = 20;
+			image = Image.FromFile("female-white.png");
+
+			// Calculate the position to center the image within the rectangle
+			imageX = rect.X + (rect.Width - image.Width) / 2;
+			imageY = rect.Y + (rect.Height - image.Height) / 2;
+
+			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.Pink)))
+			{
+				// Fill the rounded rectangle
+				g.FillPath(fillBrush, path);
+
+				// Draw the image at the calculated position
+				g.DrawImage(image, imageX, imageY, image.Width, image.Height);
+			}
+
+			using (Font font = new Font("Tahoma", 36, FontStyle.Bold))
+			{
+				g.DrawString("Choose your gender", font, Brushes.Black, new RectangleF(screen_width/2-275, 100, 550, 300));
+			}
+			image = Image.FromFile("right-arrow.png");
+
+			// Calculate the position to center the image within the rectangle
+			imageX = screen_width-150;
+			imageY = screen_height-200;
+			g.DrawImage(image, imageX, imageY, image.Width, image.Height);
+
+			
+        }
+		else if (currentScreen==2)
+        {
+			Rectangle rect = new Rectangle(screen_width/2-850, 300, 500, 500);
+			int radius = 20;
+			Image image = Image.FromFile("adult.png");
+
+			// Calculate the position to center the image within the rectangle
+			int imageX = rect.X + (rect.Width - 220) / 2;
+			int imageY = rect.Y + (rect.Height - 220) / 2;
+
+			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.LightGreen)))
+			{
+				// Fill the rounded rectangle
+				g.FillPath(fillBrush, path);
+
+				// Draw the image at the calculated position
+				g.DrawImage(image, imageX, imageY, 220, 220);
+			}
+
+			rect = new Rectangle(screen_width/2-250, 300, 500, 500);
+			radius = 20;
+			image = Image.FromFile("middle-age.png");
+
+			// Calculate the position to center the image within the rectangle
+			imageX = rect.X + (rect.Width - 220) / 2;
+			imageY = rect.Y + (rect.Height - 220) / 2;
+
+			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.Green)))
+			{
+				// Fill the rounded rectangle
+				g.FillPath(fillBrush, path);
+
+				// Draw the image at the calculated position
+				g.DrawImage(image, imageX, imageY, 220, 220);
+			}
+
+			rect = new Rectangle(screen_width/2+350, 300, 500, 500);
+			radius = 20;
+			image = Image.FromFile("old.png");
+
+			// Calculate the position to center the image within the rectangle
+			imageX = rect.X + (rect.Width - 220) / 2;
+			imageY = rect.Y + (rect.Height - 220) / 2;
+
+			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.DarkGreen)))
+			{
+				// Fill the rounded rectangle
+				g.FillPath(fillBrush, path);
+
+				// Draw the image at the calculated position
+				g.DrawImage(image, imageX, imageY, 220, 220);
+			}
+
+			using (Font font = new Font("Tahoma", 36, FontStyle.Bold))
+			{
+				g.DrawString("Choose your age range", font, Brushes.Black, new RectangleF(screen_width/2-300, 100, 600, 300));
+			}
+			image = Image.FromFile("right-arrow.png");
+
+			// Calculate the position to center the image within the rectangle
+			imageX = screen_width-150;
+			imageY = screen_height-200;
+			g.DrawImage(image, imageX, imageY, image.Width, image.Height);
+        }
+		else if (currentScreen==3)
+        {
+			Rectangle rect = new Rectangle(screen_width/2-850, 300, 500, 500);
+			int radius = 20;
+			Image image = Image.FromFile("clear.png");
+
+			// Calculate the position to center the image within the rectangle
+			int imageX = rect.X + (rect.Width - 220) / 2;
+			int imageY = rect.Y + (rect.Height - 220) / 2;
+
+			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.Wheat)))
+			{
+				// Fill the rounded rectangle
+				g.FillPath(fillBrush, path);
+
+				// Draw the image at the calculated position
+				g.DrawImage(image, imageX, imageY, 220, 220);
+			}
+
+			rect = new Rectangle(screen_width/2-250, 300, 500, 500);
+			radius = 20;
+			image = Image.FromFile("dry.png");
+
+			// Calculate the position to center the image within the rectangle
+			imageX = rect.X + (rect.Width - 220) / 2;
+			imageY = rect.Y + (rect.Height - 220) / 2;
+
+			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.LightSalmon)))
+			{
+				// Fill the rounded rectangle
+				g.FillPath(fillBrush, path);
+
+				// Draw the image at the calculated position
+				g.DrawImage(image, imageX, imageY, 220, 220);
+			}
+
+			rect = new Rectangle(screen_width/2+350, 300, 500, 500);
+			radius = 20;
+			image = Image.FromFile("oily.png");
+
+			// Calculate the position to center the image within the rectangle
+			imageX = rect.X + (rect.Width - 220) / 2;
+			imageY = rect.Y + (rect.Height - 220) / 2;
+
+			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.DarkKhaki)))
+			{
+				// Fill the rounded rectangle
+				g.FillPath(fillBrush, path);
+
+				// Draw the image at the calculated position
+				g.DrawImage(image, imageX, imageY, 220, 220);
+			}
+
+			using (Font font = new Font("Tahoma", 36, FontStyle.Bold))
+			{
+				g.DrawString("Choose your skin type", font, Brushes.Black, new RectangleF(screen_width/2-300, 100, 600, 300));
+			}
+			image = Image.FromFile("right-arrow.png");
+
+			// Calculate the position to center the image within the rectangle
+			imageX = screen_width-150;
+			imageY = screen_height-200;
+			g.DrawImage(image, imageX, imageY, image.Width, image.Height);
+        }
 		else
 		{
 
