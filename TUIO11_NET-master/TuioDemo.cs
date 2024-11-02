@@ -124,6 +124,8 @@ public class TuioDemo : Form, TuioListener
 	private Dictionary<long, TuioCursor> cursorList;
 	private Dictionary<long, TuioBlob> blobList;
 	public int currentScreen = 1;
+	public int currentProduct = 5;
+	float lastAngle = 0;
 	public bool openMenu = false;
 	public static int width, height;
 	private int window_width = 640;
@@ -211,7 +213,7 @@ public class TuioDemo : Form, TuioListener
 
 		circles.Add(new Circle(width - 230, 800, 100, 100, Color.Teal));
 
-		circles.Add(new Circle(100, 100, 100, 100, Color.Teal, "", true));
+		
 		///Products
 		int x = this.ClientSize.Width / 2-250;
 		int y = this.ClientSize.Height / 2-250;
@@ -581,29 +583,36 @@ public class TuioDemo : Form, TuioListener
 				float startAngle = i * angleStep;
 				float sweepAngle = angleStep;
 
-				
-				if (i == 4)
+
+
+				using (GraphicsPath path = new GraphicsPath())
 				{
-					using (GraphicsPath path = new GraphicsPath())
+					Rectangle outerRect = new Rectangle(
+						centerX - 250,
+						centerY - 250,
+						250 * 2,
+						250 * 2);
+					path.AddArc(outerRect, startAngle, sweepAngle);
+					Rectangle innerRect = new Rectangle(
+						centerX - 200,
+						centerY - 200,
+						200 * 2,
+						200 * 2);
+					path.AddArc(innerRect, startAngle + sweepAngle, -sweepAngle);
+					path.CloseFigure();
+					
+
+					if (i == currentProduct)
 					{
-						Rectangle outerRect = new Rectangle(
-							centerX - 250,
-							centerY - 250,
-							250 * 2,
-							250 * 2);
-						path.AddArc(outerRect, startAngle, sweepAngle);
-						Rectangle innerRect = new Rectangle(
-							centerX - 200,
-							centerY - 200,
-							200 * 2,
-							200 * 2);
-						path.AddArc(innerRect, startAngle + sweepAngle, -sweepAngle);
-						path.CloseFigure();
 						g.FillPath(Brushes.LightBlue, path);
+					}
+					else
+					{
+						g.FillPath(Brushes.LightPink, path); 
 					}
 				}
 
-				
+
 				double radians = startAngle * Math.PI / 180;
 				int outerX = centerX + (int)(250 * Math.Cos(radians));
 				int outerY = centerY + (int)(250 * Math.Sin(radians));
@@ -813,50 +822,41 @@ public class TuioDemo : Form, TuioListener
 								skinTypeText = skin_type == 0 ? "Dry skin" : skin_type == 1 ? "Normal skin" : "Oily skin";
 								this.Text = skinTypeText;
 								break;
-							case 3:
-								yaxis = tobj.Y * ClientSize.Height;
-								Xaxis = tobj.X * ClientSize.Width;
-								if (yaxis >= circles[3].Y && yaxis <= circles[3].Y + circles[3].Height && Xaxis >= circles[3].X && Xaxis <= circles[3].X + circles[3].Width)
+							case 9:
+								float currentAngle = tobj.Angle / (float)Math.PI * 180.0f % 360;
+								float angleDifference = currentAngle - lastAngle;
+
+								
+								if (angleDifference > 180)
 								{
-									if (tobj.Angle / Math.PI * 180.0f > 0 && tobj.Angle / Math.PI * 180.0f < 90)
-									{
-										objectImagePath = Path.Combine(Environment.CurrentDirectory, "1.png");
-										backgroundImagePath = Path.Combine(Environment.CurrentDirectory, "2.png");
-										Text = "product 1";
-										circles[0].Color = Color.PaleVioletRed;
-										circles[1].Color = Color.Gray;
-										circles[2].Color = Color.Gray;
-										Console.WriteLine(tobj.Angle / Math.PI * 180.0f);
-
-									}
-
-									if (tobj.Angle / Math.PI * 180.0f > 120 && tobj.Angle / Math.PI * 180.0f < 180)
-									{
-										objectImagePath = Path.Combine(Environment.CurrentDirectory, "1.png");
-										backgroundImagePath = Path.Combine(Environment.CurrentDirectory, "3.png");
-										Text = "product 2";
-										circles[0].Color = Color.Gray;
-										circles[1].Color = Color.PaleVioletRed;
-										circles[2].Color = Color.Gray;
-										Console.WriteLine(tobj.Angle / Math.PI * 180.0f);
-									}
-									if (tobj.Angle / Math.PI * 180.0f > 240 && tobj.Angle / Math.PI * 180.0f < 270)
-									{
-										objectImagePath = Path.Combine(Environment.CurrentDirectory, "1.png");
-										backgroundImagePath = Path.Combine(Environment.CurrentDirectory, "4.png");
-										Text = "product 3";
-										circles[0].Color = Color.Gray;
-										circles[1].Color = Color.Gray;
-										circles[2].Color = Color.PaleVioletRed;
-										Console.WriteLine(tobj.Angle / Math.PI * 180.0f);
-									}
-									if (tobj.Angle / Math.PI * 180.0f > 270 && tobj.Angle / Math.PI * 180.0f < 360)
-									{
-										circles[0].Color = Color.Gray;
-										circles[1].Color = Color.Gray;
-										circles[2].Color = Color.Gray;
-									}
+									angleDifference -= 360;
 								}
+								else if (angleDifference < -180)
+								{
+									angleDifference += 360;
+								}
+
+								if (Math.Abs(angleDifference) >= 45)
+								{
+									if (angleDifference > 0)
+									{
+										currentProduct = (currentProduct + 1) % 6; 
+									}
+									else
+									{
+										currentProduct = (currentProduct - 1 + 6) % 6; 
+									}
+
+									lastAngle = currentAngle;
+									objectImagePath = Path.Combine(Environment.CurrentDirectory, $"{currentProduct + 1}.png");
+									backgroundImagePath = Path.Combine(Environment.CurrentDirectory, $"{(currentProduct + 2) % 6 + 1}.png");
+									Text = $"Product {currentProduct + 1}";
+									Console.WriteLine($"Angle: {currentAngle}, Current Product: {currentProduct + 1}");
+								}
+
+
+
+
 								this.Text = Text;
 								break;
 							///Open Menu
