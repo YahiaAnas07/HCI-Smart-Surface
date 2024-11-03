@@ -104,8 +104,9 @@ public class RectangleShape
 
 	public bool Show { get; set; }
 	public string Text { get; set; }
+	public int Opacity { get;set;}
 
-	public RectangleShape(float x, float y, int width, int height, Color color, string text = "", bool show = false)
+	public RectangleShape(float x, float y, int width, int height, Color color, string text = "", bool show = false,int opacity=100)
 	{
 		X = x;
 		Y = y;
@@ -114,6 +115,7 @@ public class RectangleShape
 		Color = color;
 		Show = show;
 		Text = text;
+		Opacity = opacity;
 	}
 }
 
@@ -124,7 +126,7 @@ public class TuioDemo : Form, TuioListener
 	private Dictionary<long, TuioCursor> cursorList;
 	private Dictionary<long, TuioBlob> blobList;
 
-	public int currentScreen = 1;
+	public int currentScreen = 0;
 	public int currentProduct = 5;
 	float lastAngle = 0;
 
@@ -759,7 +761,7 @@ public class TuioDemo : Form, TuioListener
 			int imageY = rect.Y + (rect.Height - image.Height) / 2;
 
 			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
-			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.Turquoise)))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[0].Opacity,Color.Turquoise)))
 			{
 				// Fill the rounded rectangle
 				g.FillPath(fillBrush, path);
@@ -778,7 +780,7 @@ public class TuioDemo : Form, TuioListener
 			imageY = rect.Y + (rect.Height - image.Height) / 2;
 
 			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
-			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.Pink)))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[1].Opacity, Color.HotPink)))
 			{
 				// Fill the rounded rectangle
 				g.FillPath(fillBrush, path);
@@ -812,7 +814,7 @@ public class TuioDemo : Form, TuioListener
 			int imageY = rect.Y + (rect.Height - 220) / 2;
 
 			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
-			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.LightGreen)))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[2].Opacity, Color.Green)))
 			{
 				// Fill the rounded rectangle
 				g.FillPath(fillBrush, path);
@@ -829,7 +831,7 @@ public class TuioDemo : Form, TuioListener
 			imageY = rect.Y + (rect.Height - 220) / 2;
 
 			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
-			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.Green)))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[3].Opacity, Color.Green)))
 			{
 				// Fill the rounded rectangle
 				g.FillPath(fillBrush, path);
@@ -848,7 +850,7 @@ public class TuioDemo : Form, TuioListener
 			imageY = rect.Y + (rect.Height - 220) / 2;
 
 			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
-			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.DarkGreen)))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[4].Opacity, Color.Green)))
 			{
 				// Fill the rounded rectangle
 				g.FillPath(fillBrush, path);
@@ -880,7 +882,7 @@ public class TuioDemo : Form, TuioListener
 			int imageY = rect.Y + (rect.Height - 220) / 2;
 
 			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
-			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.Wheat)))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[5].Opacity, Color.LightSalmon)))
 			{
 				// Fill the rounded rectangle
 				g.FillPath(fillBrush, path);
@@ -898,7 +900,7 @@ public class TuioDemo : Form, TuioListener
 			imageY = rect.Y + (rect.Height - 220) / 2;
 
 			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
-			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.LightSalmon)))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[6].Opacity, Color.LightSalmon)))
 			{
 				// Fill the rounded rectangle
 				g.FillPath(fillBrush, path);
@@ -916,7 +918,7 @@ public class TuioDemo : Form, TuioListener
 			imageY = rect.Y + (rect.Height - 220) / 2;
 
 			using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
-			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.DarkKhaki)))
+			using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[7].Opacity, Color.LightSalmon)))
 			{
 				// Fill the rounded rectangle
 				g.FillPath(fillBrush, path);
@@ -1188,7 +1190,7 @@ public class TuioDemo : Form, TuioListener
 							{
 
 
-							case 9:
+							case 0:
 							yaxis = tobj.Y * ClientSize.Height;
 							Xaxis = tobj.X * ClientSize.Width;
 							if (currentScreen == 1)
@@ -1197,17 +1199,16 @@ public class TuioDemo : Form, TuioListener
 								if (yaxis >= rectangles[0].Y && yaxis <= rectangles[0].Y + rectangles[0].Height && Xaxis >= rectangles[0].X && Xaxis <= rectangles[0].X + rectangles[0].Width)
 								{
 									Gender = 1;
-									rectangles[7].Color = Color.Cyan;
-									rectangles[8].Color = Color.Gray;
-
+									rectangles[0].Opacity = 255;
+									rectangles[1].Opacity = 100;
 								}
 								else
 								{
 									if (yaxis >= rectangles[1].Y && yaxis <= rectangles[1].Y + rectangles[1].Height && Xaxis >= rectangles[1].X && Xaxis <= rectangles[1].X + rectangles[1].Width)
 									{
 										Gender = 0;
-										rectangles[7].Color = Color.Gray;
-										rectangles[8].Color = Color.Pink;
+										rectangles[0].Opacity = 100;
+										rectangles[1].Opacity = 255;
 									}
 
 								}
@@ -1221,20 +1222,27 @@ public class TuioDemo : Form, TuioListener
 								if (yaxis >= rectangles[2].Y && yaxis <= rectangles[2].Y + rectangles[2].Height && Xaxis >= rectangles[2].X && Xaxis <= rectangles[2].X + rectangles[2].Width)
 								{
 									age = 0;
-								
+									rectangles[2].Opacity = 255;
+									rectangles[3].Opacity = 100;
+									rectangles[4].Opacity = 100;
 								}
 								else
 								{
 									if (yaxis >= rectangles[3].Y && yaxis <= rectangles[3].Y + rectangles[3].Height && Xaxis >= rectangles[3].X && Xaxis <= rectangles[3].X + rectangles[3].Width)
 									{
 										age = 1;
-										
+										rectangles[2].Opacity = 100;
+										rectangles[3].Opacity = 255;
+										rectangles[4].Opacity = 100;
 									}
 									else
 									{
 										if (yaxis >= rectangles[4].Y && yaxis <= rectangles[4].Y + rectangles[4].Height && Xaxis >= rectangles[4].X && Xaxis <= rectangles[4].X + rectangles[4].Width)
 										{
 											age = 2;
+											rectangles[2].Opacity = 100;
+											rectangles[3].Opacity = 100;
+											rectangles[4].Opacity = 255;
 										}
 									}
 								}
@@ -1249,7 +1257,9 @@ public class TuioDemo : Form, TuioListener
 								if (yaxis >= rectangles[5].Y && yaxis <= rectangles[5].Y + rectangles[5].Height && Xaxis >= rectangles[5].X && Xaxis <= rectangles[5].X + rectangles[5].Width)
 								{
 									skinTypeText = "Normal skin";
-
+									rectangles[5].Opacity = 255;
+									rectangles[6].Opacity = 100;
+									rectangles[7].Opacity = 100;
 									
 
 
@@ -1258,7 +1268,9 @@ public class TuioDemo : Form, TuioListener
 								else if (yaxis >= rectangles[6].Y && yaxis <= rectangles[6].Y + rectangles[6].Height && Xaxis >= rectangles[6].X && Xaxis <= rectangles[6].X + rectangles[6].Width)
 								{
 									skinTypeText = "Dry skin";
-									
+									rectangles[5].Opacity = 100;
+									rectangles[6].Opacity = 255;
+									rectangles[7].Opacity = 100;
 									
 
 
@@ -1267,7 +1279,9 @@ public class TuioDemo : Form, TuioListener
 								{
 
 									skinTypeText = "Oily skin";
-
+									rectangles[5].Opacity = 100;
+									rectangles[6].Opacity = 100;
+									rectangles[7].Opacity = 255;
 								}
 							
 								this.Text = skinTypeText;
