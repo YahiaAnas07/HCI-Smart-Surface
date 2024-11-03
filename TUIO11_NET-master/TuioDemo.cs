@@ -123,7 +123,12 @@ public class TuioDemo : Form, TuioListener
 	private Dictionary<long, TuioObject> objectList;
 	private Dictionary<long, TuioCursor> cursorList;
 	private Dictionary<long, TuioBlob> blobList;
-	public int currentScreen = 0;
+
+	public int currentScreen = 1;
+	public int currentProduct = 5;
+	float lastAngle = 0;
+
+
 	public bool openMenu = false;
 	public static int width, height;
 	private int window_width = 640;
@@ -212,13 +217,19 @@ public class TuioDemo : Form, TuioListener
 
 		circles.Add(new Circle(width - 230, 800, 100, 100, Color.Teal));
 
-		circles.Add(new Circle(100, 100, 100, 100, Color.Teal, "", true));
+
+		
 		///Products
-		int x = this.ClientSize.Width / 2;
-		int y = this.ClientSize.Height / 2;
-		int radius = 50;
-		Rectangle centralRect = new Rectangle(x - radius, y - radius, radius * 2, radius * 2);
-		circles.Add(new Circle(x, y, radius, radius, Color.LimeGreen));
+		int x = this.ClientSize.Width / 2-250;
+		int y = this.ClientSize.Height / 2-250;
+		int radius = 500;
+		circles.Add(new Circle(x, y, radius, radius, Color.Transparent, "IMAGE OF PRODUCT",true));
+		x = this.ClientSize.Width / 2 -200;
+		y = this.ClientSize.Height / 2 -200;
+		radius = 400;
+		circles.Add(new Circle(x, y, radius, radius, Color.Transparent, "IMAGE OF PRODUCT", true));
+
+
 		///
 
 
@@ -487,6 +498,7 @@ public class TuioDemo : Form, TuioListener
 
 		g.Clear(Color.WhiteSmoke);
 
+
 		if (currentScreen == 0)
 		{
 			g.DrawImage(robot, 550, 200, 700, 700);
@@ -536,6 +548,10 @@ public class TuioDemo : Form, TuioListener
 			}
 			using (Font font = new Font("Tahoma", 16, FontStyle.Italic))
 			{
+
+
+
+
 				g.DrawString("Your way to a clean and clear skin.", font, Brushes.Black, new RectangleF(100, 200, 800, 600));
 				g.DrawString("To start please hover over the 'Start!' button with your hand", font, Brushes.Black, new RectangleF(screen_width - 690, screen_height - 350, 800, 500));
 			}
@@ -738,20 +754,120 @@ public class TuioDemo : Form, TuioListener
 
 
 
+
 			foreach (Circle circle in circles)
 			{
 				if (circle.Show)
 				{
-					using (Brush gradientBrush = new System.Drawing.Drawing2D.LinearGradientBrush(
-						new RectangleF(circle.X, circle.Y, circle.Width, circle.Height),
-						circle.Color, ControlPaint.Dark(circle.Color), 45f))
+
+					if (circle.Color != Color.Transparent)
 					{
 
-						g.FillEllipse(gradientBrush, circle.X, circle.Y, circle.Width, circle.Height);
+						using (Brush gradientBrush = new System.Drawing.Drawing2D.LinearGradientBrush(
+							new RectangleF(circle.X, circle.Y, circle.Width, circle.Height),
+							circle.Color, ControlPaint.Dark(circle.Color), 45f))
+						{
+							g.FillEllipse(gradientBrush, circle.X, circle.Y, circle.Width, circle.Height);
+						}
+					}
+
+
+					if (circle.Color == Color.Transparent)
+					{
+						using (Pen blackPen = new Pen(Color.Black, 3))
+						{
+							g.DrawEllipse(blackPen, circle.X, circle.Y, circle.Width, circle.Height);
+							
+						}
+
 					}
 				}
 			}
+			///////
+			int segments = 6;
+			float angleStep = 360f / segments;
+			int centerX = this.ClientSize.Width / 2;
+			int centerY = this.ClientSize.Height / 2;
 
+
+			for (int i = 0; i < segments; i++)
+			{
+				float startAngle = i * angleStep;
+				float sweepAngle = angleStep;
+
+
+
+				using (GraphicsPath path = new GraphicsPath())
+				{
+					Rectangle outerRect = new Rectangle(
+						centerX - 250,
+						centerY - 250,
+						250 * 2,
+						250 * 2);
+					path.AddArc(outerRect, startAngle, sweepAngle);
+					Rectangle innerRect = new Rectangle(
+						centerX - 200,
+						centerY - 200,
+						200 * 2,
+						200 * 2);
+					path.AddArc(innerRect, startAngle + sweepAngle, -sweepAngle);
+					path.CloseFigure();
+					
+
+					if (i == currentProduct)
+					{
+						g.FillPath(Brushes.LightBlue, path);
+					}
+					else
+					{
+						g.FillPath(Brushes.LightPink, path); 
+
+					}
+
+
+				double radians = startAngle * Math.PI / 180;
+				int outerX = centerX + (int)(250 * Math.Cos(radians));
+				int outerY = centerY + (int)(250 * Math.Sin(radians));
+
+				int innerX = centerX + (int)(200 * Math.Cos(radians));
+				int innerY = centerY + (int)(200 * Math.Sin(radians));
+
+				g.DrawLine(Pens.Black, innerX, innerY, outerX, outerY);
+				// Add rotated text to the center of each arc
+				float textAngle = startAngle + sweepAngle / 2;
+				double textRadians = textAngle * Math.PI / 180;
+				int textX = centerX + (int)(225 * Math.Cos(textRadians)); 
+				int textY = centerY + (int)(225 * Math.Sin(textRadians));
+
+				string text = $"Segment {i + 1}"; 
+				Font font = new Font("Arial", 12, FontStyle.Bold);
+				SizeF textSize = g.MeasureString(text, font);
+
+				
+				g.TranslateTransform(textX, textY);
+				if (i == 0 || i == 1 || i == 2) 
+				{
+					g.RotateTransform(textAngle + 270); 
+				}
+				else
+				{
+					g.RotateTransform(textAngle +90); 
+
+				}
+
+				// Draw text centered at the rotated position
+				g.DrawString(text, font, Brushes.Black, -textSize.Width / 2, -textSize.Height / 2);
+
+
+				// Reset transformation
+				g.ResetTransform();
+			}
+			using (Font font = new Font("Tahoma", 36, FontStyle.Bold))
+			{
+				g.DrawString("Recommended Products", font, Brushes.Black, new RectangleF(screen_width / 2 - 300, 100, 700, 300));
+			}
+
+			//////
 
 			foreach (RectangleShape rectangle in rectangles)
 			{
@@ -816,6 +932,7 @@ public class TuioDemo : Form, TuioListener
 					}
 				}
 
+
 			// draw the objects
 			if (objectList.Count > 0)
 			{
@@ -841,6 +958,11 @@ public class TuioDemo : Form, TuioListener
 						g.TranslateTransform(-ox, -oy);
 						switch (tobj.SymbolID)
 						{
+
+
+
+
+
 
 							case 0:
 								yaxis = tobj.Y * ClientSize.Height;
@@ -964,6 +1086,7 @@ public class TuioDemo : Form, TuioListener
 										circles[2].Color = Color.Gray;
 									}
 								}
+
 								this.Text = Text;
 								break;
 							///Open Menu
