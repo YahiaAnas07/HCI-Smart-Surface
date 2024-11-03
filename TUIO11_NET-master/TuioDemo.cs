@@ -124,7 +124,7 @@ public class TuioDemo : Form, TuioListener
 	private Dictionary<long, TuioCursor> cursorList;
 	private Dictionary<long, TuioBlob> blobList;
 
-	public int currentScreen = 2;
+	public int currentScreen = 1;
 	public int currentProduct = 5;
 	float lastAngle = 0;
 
@@ -671,9 +671,25 @@ public class TuioDemo : Form, TuioListener
 		g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
 		g.Clear(Color.WhiteSmoke);
-
+		rect = new Rectangle(screen_width / 2 - 600, 300, 500, 500);
+		rectangles.Add(new RectangleShape(screen_width / 2 - 600, 300, 500, 500, Color.Gray));
+		rect = new Rectangle(screen_width / 2 + 100, 300, 500, 500);
+        rectangles.Add(new RectangleShape(screen_width / 2 + 100, 300, 500, 500, Color.Gray));
+		rect = new Rectangle(screen_width / 2 - 850, 300, 500, 500);
+		rectangles.Add(new RectangleShape(screen_width / 2 - 850, 300, 500, 500, Color.Gray));
+		rect = new Rectangle(screen_width / 2 - 250, 300, 500, 500);
+		rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
+		rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
+		rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
+		rect = new Rectangle(screen_width / 2 - 850, 300, 500, 500);
+		rectangles.Add(new RectangleShape(screen_width / 2 - 850, 300, 500, 500, Color.Gray));
+		rect = new Rectangle(screen_width / 2 - 250, 300, 500, 500);
+		rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
+		rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
+		rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
 		if (currentScreen == 0)
 		{
+
 			g.DrawImage(robot, 550, 200, 700, 700);
 			Rectangle rect2 = new Rectangle(screen_width - 700, screen_height - 380, 600, 200);
 			int radius2 = 20;
@@ -730,13 +746,11 @@ public class TuioDemo : Form, TuioListener
 
 
 		}
+		
 		else if (currentScreen == 1)
 		{
 
-
-
 			rect = new Rectangle(screen_width / 2 - 600, 300, 500, 500);
-			rectangles.Add(new RectangleShape(screen_width / 2 - 600, 300, 500, 500, Color.Gray));
 			int radius = 20;
 			Image image = Image.FromFile("male-white.png");
 
@@ -756,7 +770,6 @@ public class TuioDemo : Form, TuioListener
 			}
 
 			rect = new Rectangle(screen_width / 2 + 100, 300, 500, 500);
-			rectangles.Add(new RectangleShape(screen_width / 2 + 100, 300, 500, 500, Color.Gray));
 			radius = 20;
 			image = Image.FromFile("female-white.png");
 
@@ -787,10 +800,10 @@ public class TuioDemo : Form, TuioListener
 
 
 		}
+		
 		else if (currentScreen == 2)
 		{
 			rect = new Rectangle(screen_width / 2 - 850, 300, 500, 500);
-			rectangles.Add(new RectangleShape(screen_width / 2 - 850, 300, 500, 500, Color.Gray));
 			int radius = 20;
 			Image image = Image.FromFile("adult.png");
 
@@ -808,11 +821,9 @@ public class TuioDemo : Form, TuioListener
 				g.DrawImage(image, imageX, imageY, 220, 220);
 			}
 
-			rect = new Rectangle(screen_width / 2 - 250, 300, 500, 500);
-			rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
-			radius = 20;
+			
 			image = Image.FromFile("middle-age.png");
-
+			rect = new Rectangle(screen_width / 2 - 250, 300, 500, 500);
 			// Calculate the position to center the image within the rectangle
 			imageX = rect.X + (rect.Width - 220) / 2;
 			imageY = rect.Y + (rect.Height - 220) / 2;
@@ -827,8 +838,8 @@ public class TuioDemo : Form, TuioListener
 				g.DrawImage(image, imageX, imageY, 220, 220);
 			}
 
+			
 			rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
-			rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
 			radius = 20;
 			image = Image.FromFile("old.png");
 
@@ -857,10 +868,10 @@ public class TuioDemo : Form, TuioListener
 			imageY = screen_height - 200;
 			g.DrawImage(image, imageX, imageY, image.Width, image.Height);
 		}
+		
 		else if (currentScreen == 3)
 		{
 			rect = new Rectangle(screen_width / 2 - 850, 300, 500, 500);
-			rectangles.Add(new RectangleShape(screen_width / 2 - 850, 300, 500, 500, Color.Gray));
 			int radius = 20;
 			Image image = Image.FromFile("clear.png");
 
@@ -879,7 +890,6 @@ public class TuioDemo : Form, TuioListener
 			}
 
 			rect = new Rectangle(screen_width / 2 - 250, 300, 500, 500);
-			rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
 			radius = 20;
 			image = Image.FromFile("dry.png");
 
@@ -898,7 +908,6 @@ public class TuioDemo : Form, TuioListener
 			}
 
 			rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
-			rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
 			radius = 20;
 			image = Image.FromFile("oily.png");
 
@@ -1212,64 +1221,99 @@ public class TuioDemo : Form, TuioListener
 								if (yaxis >= rectangles[2].Y && yaxis <= rectangles[2].Y + rectangles[2].Height && Xaxis >= rectangles[2].X && Xaxis <= rectangles[2].X + rectangles[2].Width)
 								{
 									age = 0;
-									rectangles[0].Color = Color.Red;
-									rectangles[1].Color = Color.Gray;
+								
 								}
 								else
 								{
-									if (yaxis >= rectangles[2].Y && yaxis <= rectangles[2].Y + rectangles[2].Height && Xaxis >= rectangles[2].X && Xaxis <= rectangles[2].X + rectangles[2].Width)
+									if (yaxis >= rectangles[3].Y && yaxis <= rectangles[3].Y + rectangles[3].Height && Xaxis >= rectangles[3].X && Xaxis <= rectangles[3].X + rectangles[3].Width)
 									{
 										age = 1;
-										rectangles[0].Color = Color.Gray;
-										rectangles[1].Color = Color.Yellow;
+										
 									}
 									else
 									{
-										if (yaxis >= rectangles[3].Y && yaxis <= rectangles[3].Y + rectangles[3].Height && Xaxis >= rectangles[3].X && Xaxis <= rectangles[3].X + rectangles[3].Width)
+										if (yaxis >= rectangles[4].Y && yaxis <= rectangles[4].Y + rectangles[4].Height && Xaxis >= rectangles[4].X && Xaxis <= rectangles[4].X + rectangles[4].Width)
 										{
 											age = 2;
 										}
 									}
 								}
-								ageText = age == 0 ? "Teen" : "Adult";
-								this.Text = ageText;
+								
+								
+								this.Text = age.ToString();
 							}
 							else if(currentScreen==3)
                             {
 								yaxis = tobj.Y * ClientSize.Height;
-								Xaxis = tobj.X * ClientSize.Width;//x axis from 0 to 1 
-								if (yaxis >= rectangles[4].Y && yaxis <= rectangles[4].Y + rectangles[4].Height && Xaxis >= rectangles[4].X && Xaxis <= rectangles[4].X + rectangles[4].Width)
+								Xaxis = tobj.X * ClientSize.Width;
+								if (yaxis >= rectangles[5].Y && yaxis <= rectangles[5].Y + rectangles[5].Height && Xaxis >= rectangles[5].X && Xaxis <= rectangles[5].X + rectangles[5].Width)
 								{
-									skin_type = 0;
-									rectangles[3].Color = Color.Brown;
-									rectangles[4].Color = Color.Gray;
-									rectangles[5].Color = Color.Gray;
+									skinTypeText = "Normal skin";
 
-								}
-								else if (yaxis >= rectangles[5].Y && yaxis <= rectangles[5].Y + rectangles[5].Height && Xaxis >= rectangles[5].X && Xaxis <= rectangles[5].X + rectangles[5].Width)
-								{
-									skin_type = 1;
-									rectangles[3].Color = Color.Gray;
-									rectangles[4].Color = Color.Beige;
-									rectangles[5].Color = Color.Gray;
+									
+
+
 
 								}
 								else if (yaxis >= rectangles[6].Y && yaxis <= rectangles[6].Y + rectangles[6].Height && Xaxis >= rectangles[6].X && Xaxis <= rectangles[6].X + rectangles[6].Width)
 								{
-									skin_type = 2;
-									rectangles[3].Color = Color.Gray;
-									rectangles[4].Color = Color.Gray;
-									rectangles[5].Color = Color.Gold;
+									skinTypeText = "Dry skin";
+									
+									
+
 
 								}
-								skinTypeText = skin_type == 0 ? "Dry skin" : skin_type == 1 ? "Normal skin" : "Oily skin";
+								else if (yaxis >= rectangles[7].Y && yaxis <= rectangles[7].Y + rectangles[7].Height && Xaxis >= rectangles[7].X && Xaxis <= rectangles[7].X + rectangles[7].Width)
+								{
+
+									skinTypeText = "Oily skin";
+
+								}
+							
 								this.Text = skinTypeText;
 							}
 							else if(currentScreen==4)
                             {
 
-                            }
-									break;
+								yaxis = tobj.Y * ClientSize.Height;
+								Xaxis = tobj.X * ClientSize.Width;
+								float currentAngle = tobj.Angle / (float)Math.PI * 180.0f % 360;
+								float angleDifference = currentAngle - lastAngle;
+
+								// Adjust angle difference to be within the range [-180, 180]
+								if (angleDifference > 180)
+								{
+									angleDifference -= 360;
+								}
+								else if (angleDifference < -180)
+								{
+									angleDifference += 360;
+								}
+
+								// Check if the angle difference (in either direction) meets the threshold for a 45-degree turn
+								if (Math.Abs(angleDifference) >= 45)
+								{
+									if (angleDifference > 0)
+									{
+										currentProduct = (currentProduct + 1) % 6; // Clockwise
+									}
+									else
+									{
+										currentProduct = (currentProduct - 1 + 6) % 6; // Anti-clockwise
+									}
+
+									lastAngle = currentAngle;
+									objectImagePath = Path.Combine(Environment.CurrentDirectory, $"{currentProduct + 1}.png");
+									backgroundImagePath = Path.Combine(Environment.CurrentDirectory, $"{(currentProduct + 2) % 6 + 1}.png");
+									Text = $"Product {currentProduct + 1}";
+									Console.WriteLine($"Angle: {currentAngle}, Current Product: {currentProduct + 1}");
+								}
+								this.Text = Text;
+
+
+
+					}
+							break;
 
 								
 								
