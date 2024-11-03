@@ -123,12 +123,7 @@ public class TuioDemo : Form, TuioListener
 	private Dictionary<long, TuioObject> objectList;
 	private Dictionary<long, TuioCursor> cursorList;
 	private Dictionary<long, TuioBlob> blobList;
-
-	public int currentScreen = 4;
-	public int currentProduct = 5;
-	float lastAngle = 0;
-
-
+	public int currentScreen = 1;
 	public bool openMenu = false;
 	public static int width, height;
 	private int window_width = 640;
@@ -208,49 +203,21 @@ public class TuioDemo : Form, TuioListener
 		if(Hand_Gesture==7)
         {
 
-			if (currentScreen == 0)
-			{
-
+			if(currentScreen==0)
+            {
 				currentScreen = 1;
 
-
 			}
-			else if (currentScreen == 1)
-			{
-				if (genderText != "")
-				{
-					currentScreen = 2;
-				}
-
+			else if(currentScreen == 1)
+            {
+				currentScreen = 2;
 			}
 			else if (currentScreen == 2)
 			{
-				if (age != -1)
-				{
-					currentScreen = 3;
-				}
-				if (skinTypeText != "")
-				{
-
-				}
-			}
-			else if (currentScreen == 3)
-			{
-				if (skinTypeText != "")
-				{
-					if(skinTypeText=="Help")
-                    {
-						currentScreen = 5;
-                    }
-                    else
-                    {
-						currentScreen = 4;
-					}
-					
-				}
+				currentScreen = 3;
 			}
 
-			}
+		}
     }
     private void Tt_Tick(object sender, EventArgs e)
     {
@@ -289,20 +256,14 @@ public class TuioDemo : Form, TuioListener
 
 		//circles.Add(new Circle(width - 230, 800, 100, 100, Color.Teal));
 
-
-
-		///Products
-		//int x = this.ClientSize.Width / 2 - 250;
-		//int y = this.ClientSize.Height / 2 - 250;
-		//int radius = 500;
-		//circles.Add(new Circle(x, y, radius, radius, Color.Transparent, "IMAGE OF PRODUCT", true));
-		//x = this.ClientSize.Width / 2 - 200;
-		//y = this.ClientSize.Height / 2 - 200;
-		//radius = 400;
-		//circles.Add(new Circle(x, y, radius, radius, Color.Transparent, "IMAGE OF PRODUCT", true));
-
-
-		///
+		//circles.Add(new Circle(100, 100, 100, 100, Color.Teal, "", true));
+		/////Products
+		//int x = this.ClientSize.Width / 2;
+		//int y = this.ClientSize.Height / 2;
+		//int radius = 50;
+		//Rectangle centralRect = new Rectangle(x - radius, y - radius, radius * 2, radius * 2);
+		//circles.Add(new Circle(x, y, radius, radius, Color.LimeGreen));
+		/////
 
 
 		//int rectWidth = 50;
@@ -371,88 +332,21 @@ public class TuioDemo : Form, TuioListener
         }
     }
 
-
-    //public void Stream()
-    //{
-    //    string msg = "";
-    //    while (true)
-    //    {
-    //        msg = c.receiveMessage();
-    //        string[] coords = msg.Split(',');
-    //        finger.X = float.Parse(coords[0]);
-    //        finger.Y = float.Parse(coords[1]);
-    //        Console.WriteLine(coords[0]);
-    //    }
-    //}
-    public void Stream()
-    {
-		
-			Stopwatch stopwatch = new Stopwatch();
-			stopwatch.Start();
-			string msg = "";
-			int messageCounter = 0; // Counter to track the number of messages received
-
-			while (true)
-			{
-				msg = c.receiveMessage();
-				Console.WriteLine(msg);
-				string[] parts = msg.Split(',');
-				Hand_Gesture = int.Parse(parts[0]);
-				Arm_Gesture = int.Parse(parts[1].Trim());
-
-				messageCounter++;
-
-				if (Arm_Gesture != 0 && Number_of_Fingers == 0 && messageCounter >= 20)
-				{
-					int previousRowNumber = row_number;
-
-					if (Arm_Gesture == 8)
-					{
-						if (row_number == 1)
-						{
-							row_number = 2;
-						}
-						else if (row_number == 0)
-						{
-							row_number = 1;
-						}
-					}
-					else if (Arm_Gesture == 9)
-					{
-						row_number--;
-						if (row_number <= 0)
-						{
-							row_number = 0;
-						}
-					}
+	//public void Stream()
+	//{
+	//	string msg = "";
+	//	while (true)
+	//	{
+	//		msg = c.receiveMessage();
+	//		string[] coords = msg.Split(',');
+	//		finger.X = float.Parse(coords[0]);
+	//		finger.Y = float.Parse(coords[1]);
+	//		Console.WriteLine(coords[0]);
+	//	}
+	//}
 
 
-					if (row_number != previousRowNumber)
-					{
-						Thread.Sleep(2000);
-						msg = "";
-					}
-
-					messageCounter = 0;
-				}
-
-				Number_of_Fingers = int.Parse(parts[2]);
-				if (Number_of_Fingers >= 3)
-				{
-					Number_of_Fingers = 3;
-				}
-
-				if (Hand_Gesture == 7 && true_ct == 3)
-				{
-					MessageBox.Show("Done");
-				}
-			}
-		
-
-    }
-
-
-    private void Form_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+	private void Form_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
 	{
 
 		if (e.KeyData == Keys.F1)
@@ -699,25 +593,10 @@ public class TuioDemo : Form, TuioListener
 		g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
 		g.Clear(Color.WhiteSmoke);
-		rect = new Rectangle(screen_width / 2 - 600, 300, 500, 500);
-		rectangles.Add(new RectangleShape(screen_width / 2 - 600, 300, 500, 500, Color.Gray));
-		rect = new Rectangle(screen_width / 2 + 100, 300, 500, 500);
-        rectangles.Add(new RectangleShape(screen_width / 2 + 100, 300, 500, 500, Color.Gray));
-		rect = new Rectangle(screen_width / 2 - 850, 300, 500, 500);
-		rectangles.Add(new RectangleShape(screen_width / 2 - 850, 300, 500, 500, Color.Gray));
-		rect = new Rectangle(screen_width / 2 - 250, 300, 500, 500);
-		rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
-		rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
-		rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
-		rect = new Rectangle(screen_width / 2 - 850, 300, 500, 500);
-		rectangles.Add(new RectangleShape(screen_width / 2 - 850, 300, 500, 500, Color.Gray));
-		rect = new Rectangle(screen_width / 2 - 250, 300, 500, 500);
-		rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
-		rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
-		rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
+
+
 		if (currentScreen == 0)
 		{
-
 			g.DrawImage(robot, 550, 200, 700, 700);
 			Rectangle rect2 = new Rectangle(screen_width - 700, screen_height - 380, 600, 200);
 			int radius2 = 20;
@@ -765,16 +644,25 @@ public class TuioDemo : Form, TuioListener
 			}
 			using (Font font = new Font("Tahoma", 16, FontStyle.Italic))
 			{
+
+
+
+
 				g.DrawString("Your way to a clean and clear skin.", font, Brushes.Black, new RectangleF(100, 200, 800, 600));
-				g.DrawString("To start please do a Thumbs Up ' with your hand", font, Brushes.Black, new RectangleF(screen_width - 690, screen_height - 350, 800, 500));
+				g.DrawString("To start please hover over the 'Start!' button with your hand", font, Brushes.Black, new RectangleF(screen_width - 690, screen_height - 350, 800, 500));
 			}
 
-		}
-		
-		else if (currentScreen == 1)
-		{
 
-			rect = new Rectangle(screen_width / 2 - 600, 300, 500, 500);
+
+
+
+		}
+		else if (currentScreen == 1) {
+
+
+
+			rect = new Rectangle(screen_width/2-600, 300, 500, 500);
+			rectangles.Add(new RectangleShape(screen_width / 2 - 60, 300, 500, 500, Color.Gray));
 			int radius = 20;
 			Image image = Image.FromFile("male-white.png");
 
@@ -793,7 +681,8 @@ public class TuioDemo : Form, TuioListener
 
 			}
 
-			rect = new Rectangle(screen_width / 2 + 100, 300, 500, 500);
+			rect = new Rectangle(screen_width/2+100, 300, 500, 500);
+			rectangles.Add(new RectangleShape(screen_width / 2 + 100, 300, 500, 500, Color.Gray));
 			radius = 20;
 			image = Image.FromFile("female-white.png");
 
@@ -815,24 +704,19 @@ public class TuioDemo : Form, TuioListener
 			{
 				g.DrawString("Choose your gender", font, Brushes.Black, new RectangleF(screen_width / 2 - 275, 100, 550, 300));
 			}
-			image = Image.FromFile("thumbs-up.png");
+			image = Image.FromFile("right-arrow.png");
 
 			// Calculate the position to center the image within the rectangle
 			imageX = screen_width - 150;
 			imageY = screen_height - 200;
 			g.DrawImage(image, imageX, imageY, image.Width, image.Height);
 
-			using (Font font = new Font("Tahoma", 16, FontStyle.Bold))
-			{
-				g.DrawString("Thumbs up to Proceed ", font, Brushes.Black, new RectangleF(imageX-image.Width-30, imageY +image.Height+10, 700, 300));
-			}
-
-
-		}
-		
-		else if (currentScreen == 2)
-		{
-			rect = new Rectangle(screen_width / 2 - 850, 300, 500, 500);
+			
+        }
+		else if (currentScreen==2)
+        {
+			rect = new Rectangle(screen_width/2-850, 300, 500, 500);
+			rectangles.Add(new RectangleShape(screen_width / 2 - 850, 300, 500, 500, Color.Gray));
 			int radius = 20;
 			Image image = Image.FromFile("adult.png");
 
@@ -850,9 +734,11 @@ public class TuioDemo : Form, TuioListener
 				g.DrawImage(image, imageX, imageY, 220, 220);
 			}
 
-			
+			rect = new Rectangle(screen_width/2-250, 300, 500, 500);
+			rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
+			radius = 20;
 			image = Image.FromFile("middle-age.png");
-			rect = new Rectangle(screen_width / 2 - 250, 300, 500, 500);
+
 			// Calculate the position to center the image within the rectangle
 			imageX = rect.X + (rect.Width - 220) / 2;
 			imageY = rect.Y + (rect.Height - 220) / 2;
@@ -867,8 +753,8 @@ public class TuioDemo : Form, TuioListener
 				g.DrawImage(image, imageX, imageY, 220, 220);
 			}
 
-			
-			rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
+			rect = new Rectangle(screen_width/2+350, 300, 500, 500);
+			rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
 			radius = 20;
 			image = Image.FromFile("old.png");
 
@@ -890,21 +776,17 @@ public class TuioDemo : Form, TuioListener
 			{
 				g.DrawString("Choose your age range", font, Brushes.Black, new RectangleF(screen_width / 2 - 300, 100, 600, 300));
 			}
-			image = Image.FromFile("thumbs-up.png");
-			
+			image = Image.FromFile("right-arrow.png");
+
 			// Calculate the position to center the image within the rectangle
 			imageX = screen_width - 150;
 			imageY = screen_height - 200;
 			g.DrawImage(image, imageX, imageY, image.Width, image.Height);
-			using (Font font = new Font("Tahoma", 16, FontStyle.Bold))
-			{
-				g.DrawString("Thumbs up to Proceed ", font, Brushes.Black, new RectangleF(imageX - image.Width - 30, imageY + image.Height + 10, 700, 300));
-			}
-		}
-		
-		else if (currentScreen == 3)
-		{
-			rect = new Rectangle(screen_width / 2 - 850, 300, 500, 500);
+        }
+		else if (currentScreen==3)
+        {
+			rect = new Rectangle(screen_width/2-850, 300, 500, 500);
+			rectangles.Add(new RectangleShape(screen_width / 2 -850, 300, 500, 500, Color.Gray));
 			int radius = 20;
 			Image image = Image.FromFile("clear.png");
 
@@ -922,7 +804,8 @@ public class TuioDemo : Form, TuioListener
 				g.DrawImage(image, imageX, imageY, 220, 220);
 			}
 
-			rect = new Rectangle(screen_width / 2 - 250, 300, 500, 500);
+			rect = new Rectangle(screen_width/2-250, 300, 500, 500);
+			rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
 			radius = 20;
 			image = Image.FromFile("dry.png");
 
@@ -940,7 +823,8 @@ public class TuioDemo : Form, TuioListener
 				g.DrawImage(image, imageX, imageY, 220, 220);
 			}
 
-			rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
+			rect = new Rectangle(screen_width/2+350, 300, 500, 500);
+			rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
 			radius = 20;
 			image = Image.FromFile("oily.png");
 
@@ -962,19 +846,63 @@ public class TuioDemo : Form, TuioListener
 			{
 				g.DrawString("Choose your skin type", font, Brushes.Black, new RectangleF(screen_width / 2 - 300, 100, 600, 300));
 			}
-			image = Image.FromFile("thumbs-up.png");
+			image = Image.FromFile("right-arrow.png");
 
 			// Calculate the position to center the image within the rectangle
 			imageX = screen_width - 150;
 			imageY = screen_height - 200;
 			g.DrawImage(image, imageX, imageY, image.Width, image.Height);
-			using (Font font = new Font("Tahoma", 16, FontStyle.Bold))
+        }
+		else if (currentScreen ==4)
+		{
+			g.Clear(Color.White);
+
+
+			string[] questions = {
+			 "On a range from 1 to 3, how oily does your skin feel?",
+			 "On a range from 1 to 3, how dry does your skin feel?",
+			 "On a range from 1 to 3, how normal does your skin feel?"
+		 };
+
+			Font font = new Font("Arial", 12);
+			int textMarginY = 30;
+			int labelMarginY = 50;
+
+
+			for (int col = 0; col < 3; col++)
 			{
-				g.DrawString("Thumbs up to Proceed ", font, Brushes.Black, new RectangleF(imageX - image.Width - 30, imageY + image.Height + 10, 700, 300));
+				g.DrawString((col + 1).ToString(), font, Brushes.Black, boxes[0, col].X + boxes[0, col].Width / 2 - 10, boxes[0, col].Y - labelMarginY);
+			}
+
+
+			for (int row = 0; row < 3; row++)
+			{
+				g.DrawString(questions[row], font, Brushes.Black, boxes[row, 0].X, boxes[row, 0].Y - textMarginY);
+			}
+
+
+			g.FillEllipse(Brushes.Black, (finger.X * width), (finger.Y * height), 15, 15);
+
+
+			if (boxes != null)
+			{
+				for (int row = 0; row < 3; row++)
+				{
+					for (int col = 0; col < 3; col++)
+					{
+						g.FillRectangle(brs[row, col], boxes[row, col]);
+					}
+				}
 			}
 		}
-		else if (currentScreen == 4)
+	
+		else
 		{
+
+
+
+
+
 			foreach (Circle circle in circles)
 			{
 				if (circle.Show)
@@ -1086,66 +1014,10 @@ public class TuioDemo : Form, TuioListener
 				{
 					g.DrawString("Recommended Products", font, Brushes.Black, new RectangleF(screen_width / 2 - 300, 100, 700, 300));
 				}
-				Image image = Image.FromFile("rotate.png");
 
-				// Calculate the position to center the image within the rectangle
-				int imageX = screen_width - 300;
-				int imageY = screen_height - 200;
-				g.DrawImage(image, imageX, imageY, image.Width, image.Height);
-				
-				using (Font font = new Font("Tahoma", 16, FontStyle.Bold))
-				{
-					g.DrawString("Rotate TUIO to transition through products", font, Brushes.Black, new RectangleF(imageX -300+60, imageY +image.Height+10, 700, 300));
-				}
-			}
-		}
-		else if (currentScreen == 5)
-		{
-			g.Clear(Color.White);
+				//////
 
-
-			string[] questions = {
-			 "On a range from 1 to 3, how oily does your skin feel?",
-			 "On a range from 1 to 3, how dry does your skin feel?",
-			 "On a range from 1 to 3, how normal does your skin feel?"
-		 };
-
-			Font font = new Font("Arial", 12);
-			int textMarginY = 30;
-			int labelMarginY = 50;
-
-
-			for (int col = 0; col < 3; col++)
-			{
-				g.DrawString((col + 1).ToString(), font, Brushes.Black, boxes[0, col].X + boxes[0, col].Width / 2 - 10, boxes[0, col].Y - labelMarginY);
-			}
-
-
-			for (int row = 0; row < 3; row++)
-			{
-				g.DrawString(questions[row], font, Brushes.Black, boxes[row, 0].X, boxes[row, 0].Y - textMarginY);
-			}
-
-
-			g.FillEllipse(Brushes.Black, (finger.X * width), (finger.Y * height), 15, 15);
-
-
-			if (boxes != null)
-			{
-				for (int row = 0; row < 3; row++)
-				{
-					for (int col = 0; col < 3; col++)
-					{
-						g.FillRectangle(brs[row, col], boxes[row, col]);
-					}
-				}
-			}
-		}
-
-
-			//////
-
-			foreach (RectangleShape rectangle in rectangles)
+				foreach (RectangleShape rectangle in rectangles)
 				{
 					if (rectangle.Show)
 					{
@@ -1196,7 +1068,7 @@ public class TuioDemo : Form, TuioListener
 								List<TuioPoint> path = tcur.Path;
 								TuioPoint current_point = path[0];
 
-								for (int i = 0; i < path.Count; i++)
+								for (i = 0; i < path.Count; i++)
 								{
 									TuioPoint next_point = path[i];
 									g.DrawLine(curPen, current_point.getScreenX(width), current_point.getScreenY(height), next_point.getScreenX(width), next_point.getScreenY(height));
@@ -1235,13 +1107,9 @@ public class TuioDemo : Form, TuioListener
 							switch (tobj.SymbolID)
 							{
 
-
 							case 9:
-							yaxis = tobj.Y * ClientSize.Height;
-							Xaxis = tobj.X * ClientSize.Width;
-							if (currentScreen == 1)
-							{
-							
+								yaxis = tobj.Y * ClientSize.Height;
+								Xaxis = tobj.X * ClientSize.Width;//from 0 to 1
 								if (yaxis >= rectangles[0].Y && yaxis <= rectangles[0].Y + rectangles[0].Height && Xaxis >= rectangles[0].X && Xaxis <= rectangles[0].X + rectangles[0].Width)
 								{
 									Gender = 1;
@@ -1258,113 +1126,65 @@ public class TuioDemo : Form, TuioListener
 										rectangles[8].Color = Color.Pink;
 									}
 
-								}
-								genderText = Gender == 0 ? "Female" : "Male";
-								this.Text = genderText;
-							}
-							else if(currentScreen == 2)
-                            {
-								yaxis = tobj.Y * ClientSize.Height;
-								Xaxis = tobj.X * ClientSize.Width;
-								if (yaxis >= rectangles[2].Y && yaxis <= rectangles[2].Y + rectangles[2].Height && Xaxis >= rectangles[2].X && Xaxis <= rectangles[2].X + rectangles[2].Width)
-								{
-									age = 0;
-								
-								}
-								else
-								{
-									if (yaxis >= rectangles[3].Y && yaxis <= rectangles[3].Y + rectangles[3].Height && Xaxis >= rectangles[3].X && Xaxis <= rectangles[3].X + rectangles[3].Width)
+									}
+									genderText = Gender == 0 ? "Female" : "Male";
+									this.Text = genderText;
+									break;
+
+								case 1:
+
+									yaxis = tobj.Y * ClientSize.Height;
+									Xaxis = tobj.X * ClientSize.Width;
+									if (yaxis >= rectangles[0].Y && yaxis <= rectangles[0].Y + rectangles[0].Height && Xaxis >= rectangles[0].X && Xaxis <= rectangles[0].X + rectangles[0].Width)
 									{
 										age = 1;
-										
+										rectangles[0].Color = Color.Red;
+										rectangles[1].Color = Color.Gray;
 									}
 									else
 									{
-										if (yaxis >= rectangles[4].Y && yaxis <= rectangles[4].Y + rectangles[4].Height && Xaxis >= rectangles[4].X && Xaxis <= rectangles[4].X + rectangles[4].Width)
+										if (yaxis >= rectangles[1].Y && yaxis <= rectangles[1].Y + rectangles[1].Height && Xaxis >= rectangles[1].X && Xaxis <= rectangles[1].X + rectangles[1].Width)
 										{
-											age = 2;
+											age = 0;
+											rectangles[0].Color = Color.Gray;
+											rectangles[1].Color = Color.Yellow;
 										}
 									}
-								}
-								
-								
-								this.Text = age.ToString();
-							}
-							else if(currentScreen==3)
-                            {
-								yaxis = tobj.Y * ClientSize.Height;
-								Xaxis = tobj.X * ClientSize.Width;
-								if (yaxis >= rectangles[5].Y && yaxis <= rectangles[5].Y + rectangles[5].Height && Xaxis >= rectangles[5].X && Xaxis <= rectangles[5].X + rectangles[5].Width)
-								{
-									skinTypeText = "Normal skin";
+									ageText = age == 0 ? "Teen" : "Adult";
+									this.Text = ageText;
+									break;
 
-									
+								case 2:
 
-
-
-								}
-								else if (yaxis >= rectangles[6].Y && yaxis <= rectangles[6].Y + rectangles[6].Height && Xaxis >= rectangles[6].X && Xaxis <= rectangles[6].X + rectangles[6].Width)
-								{
-									skinTypeText = "Dry skin";
-									
-									
-
-
-								}
-								else if (yaxis >= rectangles[7].Y && yaxis <= rectangles[7].Y + rectangles[7].Height && Xaxis >= rectangles[7].X && Xaxis <= rectangles[7].X + rectangles[7].Width)
-								{
-
-									skinTypeText = "Oily skin";
-
-								}
-							
-								this.Text = skinTypeText;
-							}
-							else if(currentScreen==4)
-                            {
-
-								yaxis = tobj.Y * ClientSize.Height;
-								Xaxis = tobj.X * ClientSize.Width;
-								float currentAngle = tobj.Angle / (float)Math.PI * 180.0f % 360;
-								float angleDifference = currentAngle - lastAngle;
-
-								// Adjust angle difference to be within the range [-180, 180]
-								if (angleDifference > 180)
-								{
-									angleDifference -= 360;
-								}
-								else if (angleDifference < -180)
-								{
-									angleDifference += 360;
-								}
-
-								// Check if the angle difference (in either direction) meets the threshold for a 45-degree turn
-								if (Math.Abs(angleDifference) >= 45)
-								{
-									if (angleDifference > 0)
+									yaxis = tobj.Y * ClientSize.Height;
+									Xaxis = tobj.X * ClientSize.Width;//x axis from 0 to 1 
+									if (yaxis >= rectangles[3].Y && yaxis <= rectangles[3].Y + rectangles[3].Height && Xaxis >= rectangles[3].X && Xaxis <= rectangles[3].X + rectangles[3].Width)
 									{
-										currentProduct = (currentProduct + 1) % 6; // Clockwise
+										skin_type = 0;
+										rectangles[3].Color = Color.Brown;
+										rectangles[4].Color = Color.Gray;
+										rectangles[5].Color = Color.Gray;
+
 									}
-									else
+									else if (yaxis >= rectangles[4].Y && yaxis <= rectangles[4].Y + rectangles[4].Height && Xaxis >= rectangles[4].X && Xaxis <= rectangles[4].X + rectangles[4].Width)
 									{
-										currentProduct = (currentProduct - 1 + 6) % 6; // Anti-clockwise
+										skin_type = 1;
+										rectangles[3].Color = Color.Gray;
+										rectangles[4].Color = Color.Beige;
+										rectangles[5].Color = Color.Gray;
+
 									}
+									else if (yaxis >= rectangles[5].Y && yaxis <= rectangles[5].Y + rectangles[5].Height && Xaxis >= rectangles[5].X && Xaxis <= rectangles[5].X + rectangles[5].Width)
+									{
+										skin_type = 2;
+										rectangles[3].Color = Color.Gray;
+										rectangles[4].Color = Color.Gray;
+										rectangles[5].Color = Color.Gold;
 
-									lastAngle = currentAngle;
-									objectImagePath = Path.Combine(Environment.CurrentDirectory, $"{currentProduct + 1}.png");
-									backgroundImagePath = Path.Combine(Environment.CurrentDirectory, $"{(currentProduct + 2) % 6 + 1}.png");
-									Text = $"Product {currentProduct + 1}";
-									Console.WriteLine($"Angle: {currentAngle}, Current Product: {currentProduct + 1}");
-								}
-								this.Text = Text;
-
-
-
-					}
-							break;
-
-								
-								
+									}
+									skinTypeText = skin_type == 0 ? "Dry skin" : skin_type == 1 ? "Normal skin" : "Oily skin";
+									this.Text = skinTypeText;
+									break;
 								case 3:
 									yaxis = tobj.Y * ClientSize.Height;
 									Xaxis = tobj.X * ClientSize.Width;
@@ -1519,8 +1339,8 @@ public class TuioDemo : Form, TuioListener
 					}
 				}
 			}
-		
-	
+		}
+	}
 		public static void Main(String[] argv)
 		{
 			int port = 0;
