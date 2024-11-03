@@ -124,7 +124,7 @@ public class TuioDemo : Form, TuioListener
 	private Dictionary<long, TuioCursor> cursorList;
 	private Dictionary<long, TuioBlob> blobList;
 
-	public int currentScreen = 1;
+	public int currentScreen = 4;
 	public int currentProduct = 5;
 	float lastAngle = 0;
 
@@ -208,21 +208,49 @@ public class TuioDemo : Form, TuioListener
 		if(Hand_Gesture==7)
         {
 
-			if(currentScreen==0)
-            {
+			if (currentScreen == 0)
+			{
+
 				currentScreen = 1;
 
+
 			}
-			else if(currentScreen == 1)
-            {
-				currentScreen = 2;
+			else if (currentScreen == 1)
+			{
+				if (genderText != "")
+				{
+					currentScreen = 2;
+				}
+
 			}
 			else if (currentScreen == 2)
 			{
-				currentScreen = 3;
+				if (age != -1)
+				{
+					currentScreen = 3;
+				}
+				if (skinTypeText != "")
+				{
+
+				}
+			}
+			else if (currentScreen == 3)
+			{
+				if (skinTypeText != "")
+				{
+					if(skinTypeText=="Help")
+                    {
+						currentScreen = 5;
+                    }
+                    else
+                    {
+						currentScreen = 4;
+					}
+					
+				}
 			}
 
-		}
+			}
     }
     private void Tt_Tick(object sender, EventArgs e)
     {
@@ -738,12 +766,8 @@ public class TuioDemo : Form, TuioListener
 			using (Font font = new Font("Tahoma", 16, FontStyle.Italic))
 			{
 				g.DrawString("Your way to a clean and clear skin.", font, Brushes.Black, new RectangleF(100, 200, 800, 600));
-				g.DrawString("To start please hover over the 'Start!' button with your hand", font, Brushes.Black, new RectangleF(screen_width - 690, screen_height - 350, 800, 500));
+				g.DrawString("To start please do a Thumbs Up ' with your hand", font, Brushes.Black, new RectangleF(screen_width - 690, screen_height - 350, 800, 500));
 			}
-
-
-
-
 
 		}
 		
@@ -791,12 +815,17 @@ public class TuioDemo : Form, TuioListener
 			{
 				g.DrawString("Choose your gender", font, Brushes.Black, new RectangleF(screen_width / 2 - 275, 100, 550, 300));
 			}
-			image = Image.FromFile("right-arrow.png");
+			image = Image.FromFile("thumbs-up.png");
 
 			// Calculate the position to center the image within the rectangle
 			imageX = screen_width - 150;
 			imageY = screen_height - 200;
 			g.DrawImage(image, imageX, imageY, image.Width, image.Height);
+
+			using (Font font = new Font("Tahoma", 16, FontStyle.Bold))
+			{
+				g.DrawString("Thumbs up to Proceed ", font, Brushes.Black, new RectangleF(imageX-image.Width-30, imageY +image.Height+10, 700, 300));
+			}
 
 
 		}
@@ -861,12 +890,16 @@ public class TuioDemo : Form, TuioListener
 			{
 				g.DrawString("Choose your age range", font, Brushes.Black, new RectangleF(screen_width / 2 - 300, 100, 600, 300));
 			}
-			image = Image.FromFile("right-arrow.png");
-
+			image = Image.FromFile("thumbs-up.png");
+			
 			// Calculate the position to center the image within the rectangle
 			imageX = screen_width - 150;
 			imageY = screen_height - 200;
 			g.DrawImage(image, imageX, imageY, image.Width, image.Height);
+			using (Font font = new Font("Tahoma", 16, FontStyle.Bold))
+			{
+				g.DrawString("Thumbs up to Proceed ", font, Brushes.Black, new RectangleF(imageX - image.Width - 30, imageY + image.Height + 10, 700, 300));
+			}
 		}
 		
 		else if (currentScreen == 3)
@@ -929,12 +962,16 @@ public class TuioDemo : Form, TuioListener
 			{
 				g.DrawString("Choose your skin type", font, Brushes.Black, new RectangleF(screen_width / 2 - 300, 100, 600, 300));
 			}
-			image = Image.FromFile("right-arrow.png");
+			image = Image.FromFile("thumbs-up.png");
 
 			// Calculate the position to center the image within the rectangle
 			imageX = screen_width - 150;
 			imageY = screen_height - 200;
 			g.DrawImage(image, imageX, imageY, image.Width, image.Height);
+			using (Font font = new Font("Tahoma", 16, FontStyle.Bold))
+			{
+				g.DrawString("Thumbs up to Proceed ", font, Brushes.Black, new RectangleF(imageX - image.Width - 30, imageY + image.Height + 10, 700, 300));
+			}
 		}
 		else if (currentScreen == 4)
 		{
@@ -1048,6 +1085,17 @@ public class TuioDemo : Form, TuioListener
 				using (Font font = new Font("Tahoma", 36, FontStyle.Bold))
 				{
 					g.DrawString("Recommended Products", font, Brushes.Black, new RectangleF(screen_width / 2 - 300, 100, 700, 300));
+				}
+				Image image = Image.FromFile("rotate.png");
+
+				// Calculate the position to center the image within the rectangle
+				int imageX = screen_width - 300;
+				int imageY = screen_height - 200;
+				g.DrawImage(image, imageX, imageY, image.Width, image.Height);
+				
+				using (Font font = new Font("Tahoma", 16, FontStyle.Bold))
+				{
+					g.DrawString("Rotate TUIO to transition through products", font, Brushes.Black, new RectangleF(imageX -300+60, imageY +image.Height+10, 700, 300));
 				}
 			}
 		}
