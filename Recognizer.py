@@ -1359,7 +1359,7 @@ recognizer = Recognizer([DOWN,UP])
 
 
 recognizer_hand = Recognizer([Left_Hand_Up,Right_Hand_UP])
-
+from BT import BluetoothScanner
 import cv2
 import mediapipe as mp
 import socket
@@ -1371,23 +1371,24 @@ mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 mp_hands = mp.solutions.hands
 
-
 # Initialize pose and hands detectors
 pose = mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 hands = mp_hands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7)
 
-gest={
-    "1":1,
-    "2":2,
-    "3":3,
-    "4":4,
-    "5":5,
-    "DOWN":6,
-    "UP":7,
-    "Left_Hand_Up":8,
-    "Right_Hand_UP":9,
+gest = {
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "DOWN": 6,
+    "UP": 7,
+    "Left_Hand_Up": 8,
+    "Right_Hand_UP": 9,
 }
-live_gest=[-1,-1,-1]
+
+# Initialize live gesture data and socket connection
+live_gest = [-1, -1, -1]
 mySocket = socket.socket()
 mySocket.bind(('localhost', 5000))
 mySocket.listen(5)
@@ -1400,9 +1401,13 @@ print(f"Device connected from {addr}")
 cap = cv2.VideoCapture(0)
 framecnt = 0
 Allpoints = []
-value=0
-hand_value=0
-hand_points=[]
+value = 0
+hand_value = 0
+hand_points = []
+num_fingers=0
+device_address=0
+data = ""  # Initialize data to be sent
+
 # Function to count fingers
 def count_fingers(hand_landmarks):
     thumb = 1 if hand_landmarks[4].x < hand_landmarks[3].x else 0
@@ -1412,7 +1417,35 @@ def count_fingers(hand_landmarks):
     pinky = 1 if hand_landmarks[20].y < hand_landmarks[18].y else 0
     return thumb + index + middle + ring + pinky
 
-# Main loop
+# Thread function for sending data
+def send_data():
+    global data
+    while True:
+        data = f"{hand_value},{value},{num_fingers},{device_address}"
+        conn.send(data.encode('utf-8'))
+        time.sleep(1)  # Reduced for continuous data flow
+
+# Thread function to handle Bluetooth scanning
+def get_BT():
+    global device_address
+    scanner = BluetoothScanner()
+    scanner.run()  # Start the Bluetooth scanning
+
+    device_address = scanner.get_device_address()  # Retrieve the device address
+    if device_address:
+        print(f"Found device address: {device_address}")
+    else:
+        print("No target device found.")
+
+# Start Bluetooth scanning in a separate thread
+receive_BT = threading.Thread(target=get_BT)
+receive_BT.start()
+
+# Start data sending in a separate thread
+send_thread = threading.Thread(target=send_data)
+send_thread.start()
+
+# Main loop for gesture recognition
 while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
@@ -1426,18 +1459,16 @@ while cap.isOpened():
     # Convert the frame to RGB format for processing
     RGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-    # Process the frame with pose detection
+    # Process the frame with pose and hand detection
     pose_results = pose.process(RGB)
-
-    # Process the frame with hand detection
     hand_results = hands.process(RGB)
 
     try:
-        
-    # Draw pose landmarks and collect points for recognizer
-        gesture_key = None  # Initialize gesture key for hand gesture
-        num_fingers=0
+        # Initialize variables for gesture recognition
+        gesture_key = None
+        num_fingers = 0
 
+        # Collect points for pose landmarks
         if pose_results.pose_landmarks:
             image_height, image_width, _ = frame.shape
             x_right_wrist = int(pose_results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_WRIST].x * image_width)
@@ -1457,80 +1488,30 @@ while cap.isOpened():
 
             mp_drawing.draw_landmarks(frame, pose_results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 
-#TODO: CONFIDENCE SCORE UP-->0.1 LESS-->DOWN
-
             # Recognize gestures every 30 frames
             if framecnt % 30 == 0:
                 framecnt = 0
                 all_result = recognizer_hand.recognize(Allpoints)
                 hand_result = recognizer.recognize(hand_points)
 
-                # Check if the recognized pose gesture exists in `gest` dictionary
                 if all_result[0] in gest:
                     value = str(gest[all_result[0]])
-                    # conn.send(value.encode('utf-8'))  # Send the pose gesture's corresponding value
-                    # print(f"")  # Print the recognized pose gesture and its mapped value
-                    
-                if hand_result[0] in gest:
-                    hand_value = str(gest[hand_result[0]])
-                    hand_value= str(6) if hand_result[1]<0.1 else str(gest[hand_result[0]])
-                    # conn.send(hand_value.encode('utf-8'))  # Send the pose gesture's corresponding value
-                     # Print the recognized pose gesture and its mapped value
 
-                # Clear points to prepare for the next recognition
+                if hand_result[0] in gest:
+                    hand_value = str(6) if hand_result[1] < 0.1 else str(gest[hand_result[0]])
+
+                # Prepare data for sending and clear points
+                
                 Allpoints.clear()
                 hand_points.clear()
 
-        # Draw hand landmarks and count fingers
-        # elif hand_results.multi_hand_landmarks:
-        #     for hand_landmarks in hand_results.multi_hand_landmarks:
-        #         mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
-        #         num_fingers = count_fingers(hand_landmarks.landmark)
-        #         num_fingers = 3 if num_fingers >= 3 else num_fingers
-
-        #         for k, v in gest.items():
-        #             if str(num_fingers) == k and hand_result[1] < 0.1:
-        #                 gesture_key = num_fingers  # Set gesture key for hand gesture
-
-        #     if gesture_key is not None:
-        #         conn.send(str(gesture_key).encode('utf-8'))  # Send the number of fingers detected
-
-        # # Display finger count
-        # if hand_results.multi_hand_landmarks:
-        #     cv2.putText(frame, f'Fingers: {num_fingers}', (10, 50),
-        #                 cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
-
-
-        
-
-        # # Draw hand landmarks and count fingers
         if hand_results.multi_hand_landmarks:
             for hand_landmarks in hand_results.multi_hand_landmarks:
                 mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
                 num_fingers = count_fingers(hand_landmarks.landmark)
-                num_fingers=3 if num_fingers>=3 else num_fingers
-                # for k,v in gest.items():
-                #     if str(num_fingers)==k and all_result[0]==None and hand_result[1]<0.1 :
+                num_fingers = 3 if num_fingers >= 3 else num_fingers
+                cv2.putText(frame, f'Fingers: {num_fingers}', (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
 
-                #         gesture_key=num_fingers
-                cv2.putText(frame, f'Fingers: {num_fingers}', (10, 50),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
-        
-        #conn.send(str(gesture_key).encode('utf-8'))
-        #print(f"HAND:{hand_result} {hand_value}, Arms{all_result} {value}, Numbers{num_fingers}") 
-        # live_gest["hand"] = hand_value
-        # live_gest["arm"] = value
-        # live_gest["finger"] = num_fingers
-        data= f"{hand_value},{value},{num_fingers}"
-        conn.send(data.encode('utf-8'))
-        
-        # if live_gest["arm"]!= None:
-        #     conn.send(str(value).encode('utf-8'))
-        # elif live_gest["finger"]>0 :
-        #     conn.send(str(live_gest["finger"]).encode('utf-8'))
-        #     conn.send(str(value).enocde('utf-8'))
-        
-       
         # Display the frame
         cv2.imshow('Gesture & Finger Counter', frame)
 
@@ -1540,14 +1521,8 @@ while cap.isOpened():
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-def send_data(conn, data):
-    while True:
-        conn.send(data.encode('utf-8'))
-        time.sleep(3000)
-# Release resources
+# Cleanup resources
 cap.release()
 cv2.destroyAllWindows()
 conn.close()
 mySocket.close()
-send_thread = threading.Thread(target=send_data, args=(conn, data))
-send_thread.start()
