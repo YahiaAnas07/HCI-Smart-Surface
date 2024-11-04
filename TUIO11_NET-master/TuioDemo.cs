@@ -139,6 +139,7 @@ public class TuioDemo : Form, TuioListener
     int Hand_Gesture = 0;
     int Arm_Gesture =0;
     int row_number=0;
+	string bluetoothName;
 	Rectangle[,] boxes;
 	Brush[,] brs = new Brush[3, 3];
 	bool[,] stat = new bool[3, 3];
@@ -372,6 +373,7 @@ public class TuioDemo : Form, TuioListener
 			string[] parts = msg.Split(',');
 			Hand_Gesture = int.Parse(parts[0]);
 			Arm_Gesture = int.Parse(parts[1].Trim());
+			bluetoothName = parts[3];
 			messageCounter++;
 			if (Arm_Gesture != 0 && Number_of_Fingers == 0 && messageCounter >= 20)
 			{
@@ -621,19 +623,19 @@ public class TuioDemo : Form, TuioListener
 
 		for (int j = 0; j < brs.GetLength(1); j++)
 		{
-			brs[row_number, j] = Brushes.Red;
+			brs[row_number, j] = Brushes.Gray;
 		}
 
 
-		brs[row_number, Number_of_Fingers - 1] = Brushes.Black;
+		brs[row_number, Number_of_Fingers - 1] = Brushes.Green;
 		stat[row_number, Number_of_Fingers - 1] = true;
 	}
 	void create_boxes()
 	{
-		int boxSize = 80;
-		int margin = 50;
-		int startX = 100;
-		int startY = 150;
+		int boxSize = 120;
+		int margin = 90;
+		int startX = 150;
+		int startY = 300;
 
 		boxes = new Rectangle[3, 3];
 
@@ -645,7 +647,7 @@ public class TuioDemo : Form, TuioListener
 				int y = startY + (row * (boxSize + margin));
 				boxes[row, col] = new Rectangle(x, y, boxSize, boxSize);
 				
-				brs[row, col] = Brushes.Red;
+				brs[row, col] = Brushes.Gray;
 				stat[row, col] = false;
 			}
 		}
@@ -725,7 +727,7 @@ public class TuioDemo : Form, TuioListener
 
 			using (Font font = new Font("Tahoma", 48, FontStyle.Bold))
 			{
-				g.DrawString("AI Skin Care Assistant", font, Brushes.Black, new RectangleF(100, 100, 800, 300));
+				g.DrawString(bluetoothName, font, Brushes.Black, new RectangleF(100, 100, 800, 300));
 			}
 			using (Font font = new Font("Tahoma", 16, FontStyle.Italic))
 			{
@@ -1047,25 +1049,27 @@ public class TuioDemo : Form, TuioListener
 
 
 			string[] questions = {
-			 "On a range from 1 to 3, how oily does your skin feel?",
-			 "On a range from 1 to 3, how dry does your skin feel?",
-			 "On a range from 1 to 3, how normal does your skin feel?"
+			 "On a scale from 1 to 3,  how often is your skin shiny?",
+			 "On a scale from 1 to 3, what's the residue concentration on the tissue?",
+			 "On a scale from 1 to 3, on a scale from 1 to 3 how often does your skin breakout?"
 		 };
 
-			Font font = new Font("Arial", 12);
-			int textMarginY = 30;
-			int labelMarginY = 50;
+			Font font = new Font("Tahoma", 18);
+			Font font1 = new Font("Tahoma", 40,FontStyle.Bold);
+			int textMarginY = 35;
+			int labelMarginY = 70;
 
 
-			for (int col = 0; col < 3; col++)
-			{
-				g.DrawString((col + 1).ToString(), font, Brushes.Black, boxes[0, col].X + boxes[0, col].Width / 2 - 10, boxes[0, col].Y - labelMarginY);
-			}
+			
 
-
+			g.DrawString("Questionaire",font1,Brushes.Black,screen_width/2-150,100);
 			for (int row = 0; row < 3; row++)
 			{
-				g.DrawString(questions[row], font, Brushes.Black, boxes[row, 0].X, boxes[row, 0].Y - textMarginY);
+				g.DrawString(questions[row], font, Brushes.Black, boxes[row, 0].X, boxes[row, 0].Y - labelMarginY);
+				for (int col = 0; col < 3; col++)
+			{
+				g.DrawString((col + 1).ToString(), font, Brushes.Black, boxes[0, col].X + boxes[0, col].Width / 2 - 10, boxes[row, col].Y - textMarginY);
+			}
 			}
 
 
