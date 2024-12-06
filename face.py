@@ -3,6 +3,14 @@ import cv2
 import numpy as np
 from deepface import DeepFace
 
+def load_deepface():
+    dummy_image = np.zeros((224, 224, 3), dtype=np.uint8)
+    try:
+        DeepFace.analyze(img_path=dummy_image, actions=['age', 'gender', 'emotion'], enforce_detection=False)
+        print("DeepFace model preloaded successfully.")
+    except Exception as e:
+        print(f"Error during loading DeepFace: {e}")
+
 def analyze_faces_with_deepface(frame, face_locations):
     deepface_results = []
     for location in face_locations:
@@ -19,14 +27,7 @@ def analyze_faces_with_deepface(frame, face_locations):
             deepface_results.append(None)
     return deepface_results
 
-def load_deepface():
-    dummy_image = np.zeros((224, 224, 3), dtype=np.uint8)
-    try:
-        DeepFace.analyze(img_path=dummy_image, actions=['age', 'gender', 'emotion'], enforce_detection=False)
-        print("DeepFace model preloaded successfully.")
-    except Exception as e:
-        print(f"Error during loading DeepFace: {e}")
-        
+
 def recognize_faces(rgb_frame, known_face_encodings, known_face_names):
     face_locations = face_recognition.face_locations(rgb_frame)
     face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
@@ -46,10 +47,10 @@ def recognize_faces(rgb_frame, known_face_encodings, known_face_names):
     return face_locations, face_names
 
 def load_faces():
-    khaled_image = face_recognition.load_image_file(r"C:\Users\Asus\source\repos\HCI-Smart-Surface\images\khaled.jpg")
+    khaled_image = face_recognition.load_image_file("images/khaled.jpg")
     khaled_face_encoding = face_recognition.face_encodings(khaled_image)[0]
 
-    aly_image = face_recognition.load_image_file(r"C:\Users\Asus\source\repos\HCI-Smart-Surface\images\khaled.jpg")
+    aly_image = face_recognition.load_image_file("images/aly.jpg")
     aly_face_encoding = face_recognition.face_encodings(aly_image)[0]
 
     known_face_encodings = [khaled_face_encoding, aly_face_encoding]

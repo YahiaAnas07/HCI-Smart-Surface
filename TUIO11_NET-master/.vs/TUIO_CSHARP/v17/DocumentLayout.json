@@ -1,14 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Pierre\\Desktop\\Aly\u0027s Task\\Aly\u0027s Task\\TUIO11_NET-master\\",
+  "WorkspaceRootPath": "C:\\Users\\yahia\\source\\repos\\HCI-Smart-Surface\\TUIO11_NET-master\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{83F18314-A320-4148-A5A5-D8FD091FC407}|TUIO_DEMO.csproj|c:\\users\\pierre\\desktop\\aly\u0027s task\\aly\u0027s task\\tuio11_net-master\\tuiodemo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{83F18314-A320-4148-A5A5-D8FD091FC407}|TUIO_DEMO.csproj|c:\\users\\yahia\\source\\repos\\hci-smart-surface\\tuio11_net-master\\tuiodemo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{83F18314-A320-4148-A5A5-D8FD091FC407}|TUIO_DEMO.csproj|solutionrelative:tuiodemo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{83F18314-A320-4148-A5A5-D8FD091FC407}|TUIO_DEMO.csproj|C:\\Users\\Pierre\\Desktop\\Aly\u0027s Task\\Aly\u0027s Task\\TUIO11_NET-master\\tuiodemo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{83F18314-A320-4148-A5A5-D8FD091FC407}|TUIO_DEMO.csproj|solutionrelative:tuiodemo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -24,25 +20,14 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "TuioDemo.cs",
-              "DocumentMoniker": "C:\\Users\\Pierre\\Desktop\\Aly\u0027s Task\\Aly\u0027s Task\\TUIO11_NET-master\\TuioDemo.cs",
+              "DocumentMoniker": "C:\\Users\\yahia\\source\\repos\\HCI-Smart-Surface\\TUIO11_NET-master\\TuioDemo.cs",
               "RelativeDocumentMoniker": "TuioDemo.cs",
-              "ToolTip": "C:\\Users\\Pierre\\Desktop\\Aly\u0027s Task\\Aly\u0027s Task\\TUIO11_NET-master\\TuioDemo.cs",
-              "RelativeToolTip": "TuioDemo.cs",
-              "ViewState": "AgIAACIBAAAAAAAAAAAAADMBAAAoAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\yahia\\source\\repos\\HCI-Smart-Surface\\TUIO11_NET-master\\TuioDemo.cs*",
+              "RelativeToolTip": "TuioDemo.cs*",
+              "ViewState": "AgIAAFECAAAAAAAAAAAcwG4CAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-22T09:49:53.293Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "TuioDemo.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\Pierre\\Desktop\\Aly\u0027s Task\\Aly\u0027s Task\\TUIO11_NET-master\\TuioDemo.cs",
-              "RelativeDocumentMoniker": "TuioDemo.cs",
-              "ToolTip": "C:\\Users\\Pierre\\Desktop\\Aly\u0027s Task\\Aly\u0027s Task\\TUIO11_NET-master\\TuioDemo.cs [Design]",
-              "RelativeToolTip": "TuioDemo.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-22T09:49:46.403Z"
             }
           ]
         }

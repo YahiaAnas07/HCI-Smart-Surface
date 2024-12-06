@@ -5,7 +5,7 @@ import numpy as np
 
 def load_model_and_reference_images(model_path='ultralytics/yolov5', model_name='yolov5s', reference_image_paths=None):
     if reference_image_paths is None:
-       reference_image_paths = [r"C:\Users\Asus\source\repos\HCI-Smart-Surface\images\Product1.jpeg"]
+        reference_image_paths = ["images/Product1.jpeg", "images/Product2.jpeg", "images/Product3.jpeg"]
 
     print("Loading YOLO model...")
     model = torch.hub.load(model_path, model_name)

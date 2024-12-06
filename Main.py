@@ -20,7 +20,9 @@ Swipe_Left_recognizer=Return_Swipe_Left_Temp()
 Swipe_Right_recognizer=Return_Swipe_Right_Temp()
 
 model, reference_product, orb = load_model_and_reference_images()
-
+print("loading DeepFace model...")
+load_deepface()
+print("DeepFace load complete.")
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
@@ -158,108 +160,105 @@ def send_data(data):
     print(f"Data sent: {data}")
 
 def read_data():
-   
-    
     while True:
-        if frame_count>0:
-            try:
-                data = conn.recv(1024)
-                if data:
+        try:
+            data = conn.recv(1024)
+            if data:
+                try:
+                    msg = data.decode('utf-8')
+                    print("Received data:", msg)
+                except UnicodeDecodeError as decode_error:
+                    print(f"Error decoding data: {decode_error}")
+                    continue
+                
+                
+                if msg == "1":
                     try:
-                        msg = data.decode('utf-8')
-                        print("Received data:", msg)
-                    except UnicodeDecodeError as decode_error:
-                        print(f"Error decoding data: {decode_error}")
-                        continue
-                    
-                    
-                    if msg == "1":
-                        try:
-                            send_msg = str(count_fingers(hand_landmarks.landmark))
-                            send_data(send_msg)
-                        except Exception as e:
-                            print(f"Error processing finger count: {e}")
-                            
-                            
-                    elif msg == "2":
-                        try:
-                            send_msg = gesture_control(hand_points)
-                            send_data(send_msg)
-                            hand_points.clear()
-                        except Exception as e:
-                            print(f"Error processing gesture control: {e}")
-                            
-                            
-                    elif msg == "3":
-                        try:
-                            face_locations, face_names, process_this_frame = face_recognition_processing(
-                                frame, known_face_encodings, known_face_names, True
-                            )
-                            if face_names != "Unknown":
-                                recognized_person = face_names[0]
-                                if recognized_person in products:
-                                    product_list = products[recognized_person]
-                                    data = f"{recognized_person}, {product_list}"
-                                else:
-                                    data = recognized_person
+                        send_msg = str(count_fingers(hand_landmarks.landmark))
+                        send_data(send_msg)
+                    except Exception as e:
+                        print(f"Error processing finger count: {e}")
+                        
+                        
+                elif msg == "2":
+                    try:
+                        send_msg = gesture_control(hand_points)
+                        send_data(send_msg)
+                        hand_points.clear()
+                    except Exception as e:
+                        print(f"Error processing gesture control: {e}")
+                        
+                        
+                elif msg == "3":
+                    try:
+                        face_locations, face_names, process_this_frame = face_recognition_processing(
+                            frame, known_face_encodings, known_face_names, True
+                        )
+                        if face_names != "Unknown":
+                            recognized_person = face_names[0]
+                            if recognized_person in products:
+                                product_list = products[recognized_person]
+                                data = f"{recognized_person}, {product_list}"
                             else:
-                                data = "Unknown"
-                            send_data(data)
-                            face_names.clear()
-                        except Exception as e:
-                            print(f"Error in face recognition processing: {e}")
-                            
+                                data = recognized_person
+                        else:
+                            data = "Unknown"
+                        send_data(data)
+                        face_names.clear()
+                    except Exception as e:
+                        print(f"Error in face recognition processing: {e}")
+                        
 
-                    elif msg == "4":
-                        try:
-                            face_locations, face_names, process_this_frame = face_recognition_processing(
-                                frame, known_face_encodings, known_face_names, True
-                            )
-                            deepface_results = analyze_faces_with_deepface(frame, face_locations)
-                            filtered_results = [
-                                {
-                                    "age": result.get("age"),
-                                    "gender": result.get("dominant_gender"),
-                                    "emotion": result.get("dominant_emotion"),
-                                }
-                                for result in deepface_results
-                            ]
-                            send_msg = f"{filtered_results}"
-                            send_data(send_msg)
-                        except Exception as e:
-                            print(f"Error in DeepFace analysis: {e}")
-                            
-                            
-                    elif msg == "5":
-                        try:
-                            device_name = get_BT()
-                            if device_name in products:
-                                product_list = products[device_name]
-                                data = f"{device_name}, {product_list}"
-                            else:
-                                data = device_name
-                            send_data(data)
-                        except Exception as e:
-                            print(f"Error sending confirmation for message '5': {e}")
-                            
-                            
-                    elif msg == "6":
-                        try:
-                            product_number = find_matches(reference_product, cropped_object_gray, orb)
-                            send_data(str(product_number))
-                        except Exception as e:
-                            print(f"Error in Object Detection : {e}")
-                    else:
-                        print("Unknown message received.")
+                elif msg == "4":
+                    try:
+                        face_locations, face_names, process_this_frame = face_recognition_processing(
+                            frame, known_face_encodings, known_face_names, True
+                        )
+                        deepface_results = analyze_faces_with_deepface(frame, face_locations)
+                        filtered_results = [
+                            {
+                                "age": result.get("age"),
+                                "gender": result.get("dominant_gender"),
+                                "emotion": result.get("dominant_emotion"),
+                            }
+                            for result in deepface_results
+                        ]
+                        send_msg = f"{filtered_results}"
+                        send_data(send_msg)
+                    except Exception as e:
+                        print(f"Error in DeepFace analysis: {e}")
+                        
+                        
+                elif msg == "5":
+                    try:
+                        device_name = get_BT()
+                        if device_name in products:
+                            product_list = products[device_name]
+                            data = f"{device_name}, {product_list}"
+                        else:
+                            data = device_name
+                        send_data(data)
+                    except Exception as e:
+                        print(f"Error sending confirmation for message '5': {e}")
+                        
+                        
+                elif msg == "6":
+                    try:
+                        product_number = find_matches(reference_product, cropped_object_gray, orb)
+                        send_data(str(product_number))
+                    except Exception as e:
+                        print(f"Error in Object Detection : {e}")
                 else:
-                    print("No data received.")
-                    break
-            except ConnectionError as conn_error:
-                print(f"Connection error: {conn_error}")
+                    print("Unknown message received.")
+            else:
+                print("No data received.")
                 break
-            except Exception as e:
-                print(f"Unhandled error: {e}")
-                break
+        except ConnectionError as conn_error:
+            print(f"Connection error: {conn_error}")
+            break
+        except Exception as e:
+            print(f"Unhandled error: {e}")
+            break
 
 read_thread = threading.Thread(target=read_data)
 read_thread.start()
