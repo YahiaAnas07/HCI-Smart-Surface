@@ -32,6 +32,7 @@ using System.Data;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 class Client
 {
     public NetworkStream stream;
@@ -146,7 +147,7 @@ public class TuioDemo : Form, TuioListener
     private Dictionary<long, TuioObject> objectList;
     private Dictionary<long, TuioCursor> cursorList;
     private Dictionary<long, TuioBlob> blobList;
-    public int currentScreen = 0;
+    public int currentScreen = -1;
     public int currentProduct = 5;
     float lastAngle = 0;
     public bool openMenu = false;
@@ -168,11 +169,11 @@ public class TuioDemo : Form, TuioListener
     private int screen_height = Screen.PrimaryScreen.Bounds.Height;
     List<Circle> circles = new List<Circle>();
     List<RectangleShape> rectangles = new List<RectangleShape>();
-    
+    bool scanner = true;
     private Client c;
     Bitmap off;
     PointF finger = new PointF();
-
+    string bluetoothName;
     private bool fullscreen;
     private bool verbose;
     System.Windows.Forms.Timer tt = new System.Windows.Forms.Timer();
@@ -195,7 +196,12 @@ public class TuioDemo : Form, TuioListener
     Image robot;
     private DataGridView dataGridViewProducts;
     private Label titleLabel;
-
+    List<string> products = new List<string>();
+    int option_picked = 0;
+    int pop_up = -1;
+    bool od = true;
+    string emotion = "";
+    int msh_3arf = -1;
 
     bool send_data = false;
     public TuioDemo(int port)
@@ -282,13 +288,52 @@ public class TuioDemo : Form, TuioListener
         }
         if (send_data)
         {
-            if (currentScreen == 0)
+
+            if (currentScreen == -1)
             {
                 c.sendMessage("2");
                 if (msg == "TUP")
                 {
-                    currentScreen = 1;
+                    currentScreen = 0;
                     this.Invalidate();
+                }
+            }
+            else if (currentScreen == 0)
+            {
+                if(option_picked == 0)
+                {
+                    c.sendMessage("3");
+                    if (msg != "Unknown" && msg != "error" && msg != "TUP")
+                    {
+                        string[] parts = msg.Split(',');
+                        bluetoothName = parts[0];
+                        products.Add(parts[1]);
+                        products.Add(parts[2]);
+                        products.Add(parts[3]);
+                        ageText = parts[4];
+                        genderText = parts[5];
+                        skinTypeText = parts[6];
+                        currentScreen = 4;
+                        this.Invalidate();
+                    }
+
+                }
+                else if (option_picked == 1)
+                {
+                    c.sendMessage("5");
+                    if (msg == "Soundcore")
+                    {
+                        string[] parts = msg.Split(',');
+                        bluetoothName = parts[0];
+                        products.Add(parts[1]);
+                        products.Add(parts[2]);
+                        products.Add(parts[3]);
+                        ageText = parts[4];
+                        genderText = parts[5];
+                        skinTypeText = parts[6];
+                        currentScreen = 4;
+                        this.Invalidate();
+                    }
                 }
             }
             else if (currentScreen == 1)
@@ -316,6 +361,40 @@ public class TuioDemo : Form, TuioListener
                 {
                     currentScreen = 4;
                     this.Invalidate();
+                }
+            }
+            else if (currentScreen == 4)
+            {
+                if (ct_tick % 200 == 0)
+                {
+                    c.sendMessage("4");
+                }
+                else
+                {
+                    c.sendMessage("2");
+                }
+
+                if (msg == "TUP" && scanner == true)
+                {
+                    currentScreen = 6;
+                    this.Invalidate();
+                }
+            }
+            else if (currentScreen == 5)
+            {
+
+            }
+            else if (currentScreen == 6)
+            {
+                if (pop_up == -1)
+                {
+
+                    c.sendMessage("6");
+                    if (msg == "1" || msg == "2" || msg == "3")
+                    {
+                        pop_up = int.Parse(msg);
+                        this.Invalidate();
+                    }
                 }
             }
         }
@@ -404,6 +483,7 @@ public class TuioDemo : Form, TuioListener
                 pythonSelector();
             }
 
+
         }
 
         if (Number_of_Fingers >= 1 && currentScreen == 5)
@@ -451,6 +531,39 @@ public class TuioDemo : Form, TuioListener
     }
     private void TuioDemo_Load(object sender, EventArgs e)
     {
+        Rectangle rect;
+        rect = new Rectangle(screen_width / 2 - 600, 300, 500, 500);
+        rectangles.Add(new RectangleShape(screen_width / 2 - 600, 300, 500, 500, Color.Gray));
+        rect = new Rectangle(screen_width / 2 + 100, 300, 500, 500);
+        rectangles.Add(new RectangleShape(screen_width / 2 + 100, 300, 500, 500, Color.Gray));
+        rect = new Rectangle(screen_width / 2 - 850, 300, 500, 500);
+        rectangles.Add(new RectangleShape(screen_width / 2 - 850, 300, 500, 500, Color.Gray));
+        rect = new Rectangle(screen_width / 2 - 250, 300, 500, 500);
+        rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
+        rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
+        rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
+        rect = new Rectangle(screen_width / 2 - 850, 300, 500, 500);
+        rectangles.Add(new RectangleShape(screen_width / 2 - 850, 300, 500, 500, Color.Gray));
+        rect = new Rectangle(screen_width / 2 - 250, 300, 500, 500);
+        rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
+        rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
+        rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
+        rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
+        rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
+
+        rect = new Rectangle(screen_width / 2 - 600, 300, 500, 500);
+        rectangles.Add(new RectangleShape(screen_width / 2 - 600, 300, 500, 500, Color.Gray));
+        rect = new Rectangle(screen_width / 2 + 100, 300, 500, 500);
+
+        rectangles.Add(new RectangleShape(screen_width / 2 + 100, 300, 500, 500, Color.Gray));
+        this.Text = rectangles.Count.ToString();
+
+        rect = new Rectangle(screen_width - 600, screen_height - 300, 400, 100);
+        rectangles.Add(new RectangleShape(screen_width - 600, screen_height - 300, 400, 100, Color.Gray));
+
+        rect = new Rectangle(150, screen_height - 300, 400, 100);
+        rectangles.Add(new RectangleShape(150, screen_height - 300, 400, 100, Color.Gray));
+
 
         if (off == null)
         {
@@ -806,16 +919,20 @@ public class TuioDemo : Form, TuioListener
 	protected override void OnPaintBackground(PaintEventArgs pevent)
 	{
 		Rectangle rect;
-		// Getting the graphics object
-		Graphics g = pevent.Graphics;
+
+        // Getting the graphics object
+        Graphics g = pevent.Graphics;
 		g.FillRectangle(bgrBrush, new Rectangle(0, 0, width, height));
 		Text = $"{genderText} {ageText} {skinTypeText}";
 
 
-		string emotion = "happy";
+		
     // Use anti-aliasing to smooth graphics
 		g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-
+        if( emotion == "")
+        {
+            g.Clear(Color.WhiteSmoke);
+        }
         if (emotion == "happy")
         {
             g.Clear(Color.Orange);
@@ -823,20 +940,16 @@ public class TuioDemo : Form, TuioListener
             Font topLeftFont = new Font("Tahoma", 24, FontStyle.Bold); // Adjust font size and style as needed
             PointF topLeftPosition = new PointF(20, 20); // Position in the top-left corner
             g.DrawString(topLeftText, topLeftFont, Brushes.Black, topLeftPosition);
-
-
-
         }
-        if (emotion == "calm")
+        if (emotion == "neutral")
         {
             g.Clear(Color.LightBlue);
             string topLeftText = "A perfect time to pamper yourself!";
             Font topLeftFont = new Font("Tahoma", 24, FontStyle.Bold); // Adjust font size and style as needed
             PointF topLeftPosition = new PointF(20, 20); // Position in the top-left corner
             g.DrawString(topLeftText, topLeftFont, Brushes.Black, topLeftPosition);
-
         }
-        if (emotion == "stressed")
+        if (emotion == "sad")
         {
             g.Clear(Color.Lavender);
             string topLeftText = "Take a deep breath.";
@@ -846,22 +959,21 @@ public class TuioDemo : Form, TuioListener
         }
 
 
-        rect = new Rectangle(screen_width / 2 - 600, 300, 500, 500);
-		rectangles.Add(new RectangleShape(screen_width / 2 - 600, 300, 500, 500, Color.Gray));
-		rect = new Rectangle(screen_width / 2 + 100, 300, 500, 500);
-		rectangles.Add(new RectangleShape(screen_width / 2 + 100, 300, 500, 500, Color.Gray));
-		rect = new Rectangle(screen_width / 2 - 850, 300, 500, 500);
-		rectangles.Add(new RectangleShape(screen_width / 2 - 850, 300, 500, 500, Color.Gray));
-		rect = new Rectangle(screen_width / 2 - 250, 300, 500, 500);
-		rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
-		rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
-		rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
-		rect = new Rectangle(screen_width / 2 - 850, 300, 500, 500);
-		rectangles.Add(new RectangleShape(screen_width / 2 - 850, 300, 500, 500, Color.Gray));
-		rect = new Rectangle(screen_width / 2 - 250, 300, 500, 500);
-		rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
-		rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
-		rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
+  //      rect = new Rectangle(screen_width / 2 - 600, 300, 500, 500);
+		//rectangles.Add(new RectangleShape(screen_width / 2 - 600, 300, 500, 500, Color.Gray));
+		//rect = new Rectangle(screen_width / 2 + 100, 300, 500, 500);
+		//rectangles.Add(new RectangleShape(screen_width / 2 + 100, 300, 500, 500, Color.Gray));
+		//rect = new Rectangle(screen_width / 2 - 850, 300, 500, 500);
+		//rectangles.Add(new RectangleShape(screen_width / 2 - 850, 300, 500, 500, Color.Gray));
+		//rect = new Rectangle(screen_width / 2 - 250, 300, 500, 500);
+		//rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
+		//rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
+		//rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
+		//rect = new Rectangle(screen_width / 2 - 850, 300, 500, 500);
+		//rectangles.Add(new RectangleShape(screen_width / 2 - 850, 300, 500, 500, Color.Gray));
+		//rect = new Rectangle(screen_width / 2 - 250, 300, 500, 500);
+		//rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
+
         if (currentScreen == -1)
         {
             rect = new Rectangle(screen_width / 2 - 600, 300, 500, 500);
@@ -873,13 +985,13 @@ public class TuioDemo : Form, TuioListener
 
             using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
             using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[0].Opacity, Color.ForestGreen)))
-			using(Font font = new Font("Tahoma",28,FontStyle.Bold))
+            using (Font font = new Font("Tahoma", 28, FontStyle.Bold))
             {
                 // Fill the rounded rectangle
                 g.FillPath(fillBrush, path);
 
-				// Draw the image at the calculated position
-				g.DrawString("New User",font,Brushes.White, imageX, imageY);
+                // Draw the image at the calculated position
+                g.DrawString("New User", font, Brushes.White, imageX, imageY);
 
             }
 
@@ -893,7 +1005,7 @@ public class TuioDemo : Form, TuioListener
 
             using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
             using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[1].Opacity, Color.ForestGreen)))
-            using (Font font = new Font("Tahoma", 28,FontStyle.Bold))
+            using (Font font = new Font("Tahoma", 28, FontStyle.Bold))
             {
                 // Fill the rounded rectangle
                 g.FillPath(fillBrush, path);
@@ -918,16 +1030,16 @@ public class TuioDemo : Form, TuioListener
             }
         }
         else if (currentScreen == 0)
-		{
-			g.DrawImage(robot, 550, 200, 700, 700);
-			Rectangle rect2 = new Rectangle(screen_width - 700, screen_height - 380, 600, 200);
-			int radius2 = 20;
-			Font font2 = new Font("Tahoma", 36, FontStyle.Bold);
-			using (GraphicsPath path2 = GetRoundedRectanglePath(rect2, radius2))
-			using (SolidBrush fillBrush2 = new SolidBrush(Color.FromArgb(128, Color.White)))
-			using (Pen borderPen2 = new Pen(Color.Black, 2))
-			{
-				g.FillPath(fillBrush2, path2);
+        {
+            g.DrawImage(robot, 550, 200, 700, 700);
+            Rectangle rect2 = new Rectangle(screen_width - 700, screen_height - 380, 600, 200);
+            int radius2 = 20;
+            Font font2 = new Font("Tahoma", 36, FontStyle.Bold);
+            using (GraphicsPath path2 = GetRoundedRectanglePath(rect2, radius2))
+            using (SolidBrush fillBrush2 = new SolidBrush(Color.FromArgb(128, Color.White)))
+            using (Pen borderPen2 = new Pen(Color.Black, 2))
+            {
+                g.FillPath(fillBrush2, path2);
 
                 // Draw the border around the rounded rectangle
                 g.DrawPath(borderPen2, path2);
@@ -960,20 +1072,16 @@ public class TuioDemo : Form, TuioListener
 
             SolidBrush b = new SolidBrush(Color.Green);
 
-			using (Font font = new Font("Tahoma", 48, FontStyle.Bold))
-			{
-				g.DrawString(bluetoothName, font, Brushes.Black, new RectangleF(100, 100, 800, 300));
-			}
-			using (Font font = new Font("Tahoma", 16, FontStyle.Italic))
-			{
-
-
-
-
-				g.DrawString("Your way to a clean and clear skin.", font, Brushes.Black, new RectangleF(100, 200, 800, 600));
+            using (Font font = new Font("Tahoma", 48, FontStyle.Bold))
+            {
+                g.DrawString(bluetoothName, font, Brushes.Black, new RectangleF(100, 100, 800, 300));
+            }
+            using (Font font = new Font("Tahoma", 16, FontStyle.Italic))
+            { 
+                g.DrawString("Your way to a clean and clear skin.", font, Brushes.Black, new RectangleF(100, 200, 800, 600));
                 g.DrawString("Use Thumbs Up to confirm selection", font, Brushes.Black, new RectangleF(100, 250, 800, 600));
                 g.DrawString("Choose this to use Face Detection", font, Brushes.Black, new RectangleF(180, screen_height - 350, 800, 500));
-				g.DrawString("Choose this to use Bluetooth", font, Brushes.Black, new RectangleF(screen_width - 540, screen_height - 350, 800, 500));
+                g.DrawString("Choose this to use Bluetooth", font, Brushes.Black, new RectangleF(screen_width - 540, screen_height - 350, 800, 500));
             }
 
             rect2 = new Rectangle(50, screen_height - 380, 600, 200);
@@ -1276,12 +1384,17 @@ public class TuioDemo : Form, TuioListener
                     double textRadians = textAngle * Math.PI / 180;
                     int textX = centerX + (int)(225 * Math.Cos(textRadians));
                     int textY = centerY + (int)(225 * Math.Sin(textRadians));
-
-                    string text = $"Segment {i + 1}";
+                    string text;
+                    if (i <= 2)
+                    {
+                        text = products[i];
+                    }
+                    else
+                    {
+                        text = "???";
+                    }
                     Font font = new Font("Arial", 12, FontStyle.Bold);
                     SizeF textSize = g.MeasureString(text, font);
-
-
                     g.TranslateTransform(textX, textY);
                     if (i == 0 || i == 1 || i == 2)
                     {
@@ -1396,112 +1509,117 @@ public class TuioDemo : Form, TuioListener
             g.Clear(Color.White);
 
 
-			string[] questions = {
-			 "On a scale from 1 to 3,  how often is your skin shiny?",
-			 "On a scale from 1 to 3, what's the residue concentration on the tissue?",
-			 "On a scale from 1 to 3, on a scale from 1 to 3 how often does your skin breakout?"
-		 };
+            string[] questions = {
+             "On a scale from 1 to 3,  how often is your skin shiny?",
+             "On a scale from 1 to 3, what's the residue concentration on the tissue?",
+             "On a scale from 1 to 3, on a scale from 1 to 3 how often does your skin breakout?"
+         };
 
-			Font font = new Font("Tahoma", 18);
-			Font font1 = new Font("Tahoma", 40,FontStyle.Bold);
-			int textMarginY = 35;
-			int labelMarginY = 70;
+            Font font = new Font("Tahoma", 18);
+            Font font1 = new Font("Tahoma", 40, FontStyle.Bold);
+            int textMarginY = 35;
+            int labelMarginY = 70;
 
 
-			
 
-			g.DrawString("Questionaire",font1,Brushes.Black,screen_width/2-150,100);
-			for (int row = 0; row < 3; row++)
-			{
-				g.DrawString(questions[row], font, Brushes.Black, boxes[row, 0].X, boxes[row, 0].Y - labelMarginY);
-				for (int col = 0; col < 3; col++)
-			{
-				g.DrawString((col + 1).ToString(), font, Brushes.Black, boxes[0, col].X + boxes[0, col].Width / 2 - 10, boxes[row, col].Y - textMarginY);
-			}
-			}
+
+            g.DrawString("Questionaire", font1, Brushes.Black, screen_width / 2 - 150, 100);
+            for (int row = 0; row < 3; row++)
+            {
+                g.DrawString(questions[row], font, Brushes.Black, boxes[row, 0].X, boxes[row, 0].Y - labelMarginY);
+                for (int col = 0; col < 3; col++)
+                {
+                    g.DrawString((col + 1).ToString(), font, Brushes.Black, boxes[0, col].X + boxes[0, col].Width / 2 - 10, boxes[row, col].Y - textMarginY);
+                }
+            }
 
 
             g.FillEllipse(Brushes.Black, (finger.X * width), (finger.Y * height), 15, 15);
 
 
-			if (boxes != null)
-			{
-				for (int row = 0; row < 3; row++)
-				{
-					for (int col = 0; col < 3; col++)
-					{
-						g.FillRectangle(brs[row, col], boxes[row, col]);
-					}
-				}
-			}
-		}
-		else if(currentScreen==6)
-		{
-			using (Font textFont = new Font("Tahoma", 18, FontStyle.Bold))
-			{
-				g.DrawString("Please show the product to the camera:",textFont,Brushes.Black,50,50);
-			}
-
-			Image image = Image.FromFile("Picture1.png");
-            string text = "Malinda Cream is a lightweight, revitalizing moisturizer designed to nourish and restore your skin's natural glow. Formulated with the Aquaxyl Active System, it delivers instant and long-lasting hydration, leaving your skin feeling refreshed and rejuvenated.\r\nThis cream features two powerhouse ingredients:\r\n\n表tHyaluronic Acid, which deeply hydrates and plumps the skin.\r\n表tNiacinamide, known for its soothing and brightening properties, helping to even out skin tone.\r\n\nIt is non-comedogenic, making it suitable for acne-prone skin, while its pH-balanced formula ensures it is gentle and safe for daily use. With a smooth texture and a subtle, pleasant fragrance, Malinda Cream offers a luxurious skincare experience tailored for oily and acne-prone skin types.\r\n\nEnjoy hydrated, healthy-looking skin with every application!\r\n";
-
-            using (SolidBrush overlayBrush = new SolidBrush(Color.FromArgb(150, Color.Black)))
+            if (boxes != null)
             {
-                g.FillRectangle(overlayBrush, 0, 0, screen_width, screen_height);
-            }
-
-            // Popup dimensions
-            int popupWidth = 1200;
-            int popupHeight = 750;
-            int popupX = (screen_width - popupWidth) / 2;
-            int popupY = (screen_height - popupHeight) / 2;
-
-            // Draw popup background
-            Rectangle popupRect = new Rectangle(popupX, popupY, popupWidth, popupHeight);
-            int cornerRadius = 20;
-            using (GraphicsPath popupPath = GetRoundedRectanglePath(popupRect, cornerRadius))
-            using (SolidBrush popupBrush = new SolidBrush(Color.White))
-            using (Pen borderPen = new Pen(Color.Black, 2))
-            {
-                g.FillPath(popupBrush, popupPath);
-                g.DrawPath(borderPen, popupPath);
-            }
-
-            // Draw image
-            if (image != null)
-            {
-                int imageSize = 210;
-                int imageX = popupX + (popupWidth - imageSize) / 2;
-                int imageY = popupY + 20;
-                g.DrawImage(image, imageX, imageY, imageSize, imageSize);
-            }
-
-            // Draw text
-            if (!string.IsNullOrEmpty(text))
-            {
-                using (Font textFont = new Font("Tahoma", 18, FontStyle.Bold))
+                for (int row = 0; row < 3; row++)
                 {
-                    Rectangle textRect = new Rectangle(popupX + 20, popupY + 200, popupWidth - 40, 500);
-                    StringFormat textFormat = new StringFormat
+                    for (int col = 0; col < 3; col++)
                     {
-                        Alignment = StringAlignment.Near,
-                        LineAlignment = StringAlignment.Center
-                    };
-                    g.DrawString(text, textFont, Brushes.Black, textRect, textFormat);
+                        g.FillRectangle(brs[row, col], boxes[row, col]);
+                    }
                 }
             }
-
-            // Draw close button
-            Rectangle closeRect = new Rectangle(popupX + popupWidth - 40, popupY + 10, 30, 30);
-            using (SolidBrush closeBrush = new SolidBrush(Color.Red))
-            using (Font closeFont = new Font("Tahoma", 14, FontStyle.Bold))
+        }
+        else if (currentScreen == 6)
+        {
+            using (Font textFont = new Font("Tahoma", 18, FontStyle.Bold))
             {
-                g.FillEllipse(closeBrush, closeRect);
-                g.DrawString("X", closeFont, Brushes.White, closeRect, new StringFormat
+                g.DrawString("Please show the product to the camera:", textFont, Brushes.Black, 50, 50);
+            }
+
+            if (pop_up == 1 || pop_up == 2 || pop_up == 3)
+            {
+
+            
+                Image image = Image.FromFile("Picture1.png");
+                string text = "Malinda Cream is a lightweight, revitalizing moisturizer designed to nourish and restore your skin's natural glow. Formulated with the Aquaxyl Active System, it delivers instant and long-lasting hydration, leaving your skin feeling refreshed and rejuvenated.\r\nThis cream features two powerhouse ingredients:\r\n\n表tHyaluronic Acid, which deeply hydrates and plumps the skin.\r\n表tNiacinamide, known for its soothing and brightening properties, helping to even out skin tone.\r\n\nIt is non-comedogenic, making it suitable for acne-prone skin, while its pH-balanced formula ensures it is gentle and safe for daily use. With a smooth texture and a subtle, pleasant fragrance, Malinda Cream offers a luxurious skincare experience tailored for oily and acne-prone skin types.\r\n\nEnjoy hydrated, healthy-looking skin with every application!\r\n";
+
+                using (SolidBrush overlayBrush = new SolidBrush(Color.FromArgb(150, Color.Black)))
                 {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                });
+                    g.FillRectangle(overlayBrush, 0, 0, screen_width, screen_height);
+                }
+
+                // Popup dimensions
+                int popupWidth = 1200;
+                int popupHeight = 750;
+                int popupX = (screen_width - popupWidth) / 2;
+                int popupY = (screen_height - popupHeight) / 2;
+
+                // Draw popup background
+                Rectangle popupRect = new Rectangle(popupX, popupY, popupWidth, popupHeight);
+                int cornerRadius = 20;
+                using (GraphicsPath popupPath = GetRoundedRectanglePath(popupRect, cornerRadius))
+                using (SolidBrush popupBrush = new SolidBrush(Color.White))
+                using (Pen borderPen = new Pen(Color.Black, 2))
+                {
+                    g.FillPath(popupBrush, popupPath);
+                    g.DrawPath(borderPen, popupPath);
+                }
+
+                // Draw image
+                if (image != null)
+                {
+                    int imageSize = 210;
+                    int imageX = popupX + (popupWidth - imageSize) / 2;
+                    int imageY = popupY + 20;
+                    g.DrawImage(image, imageX, imageY, imageSize, imageSize);
+                }
+
+                // Draw text
+                if (!string.IsNullOrEmpty(text))
+                {
+                    using (Font textFont = new Font("Tahoma", 18, FontStyle.Bold))
+                    {
+                        Rectangle textRect = new Rectangle(popupX + 20, popupY + 200, popupWidth - 40, 500);
+                        StringFormat textFormat = new StringFormat
+                        {
+                            Alignment = StringAlignment.Near,
+                            LineAlignment = StringAlignment.Center
+                        };
+                        g.DrawString(text, textFont, Brushes.Black, textRect, textFormat);
+                    }
+                }
+
+                // Draw close button
+                Rectangle closeRect = new Rectangle(popupX + popupWidth - 40, popupY + 10, 30, 30);
+                using (SolidBrush closeBrush = new SolidBrush(Color.Red))
+                using (Font closeFont = new Font("Tahoma", 14, FontStyle.Bold))
+                {
+                    g.FillEllipse(closeBrush, closeRect);
+                    g.DrawString("X", closeFont, Brushes.White, closeRect, new StringFormat
+                    {
+                        Alignment = StringAlignment.Center,
+                        LineAlignment = StringAlignment.Center
+                    });
+                }
             }
         }
 	
@@ -1637,7 +1755,47 @@ public class TuioDemo : Form, TuioListener
                         case 1:
                             yaxis = tobj.Y * ClientSize.Height;
                             Xaxis = tobj.X * ClientSize.Width;
-                            if (currentScreen == 1)
+                            if (currentScreen == -1)
+                            {
+                                if (yaxis >= rectangles[9].Y && yaxis <= rectangles[9].Y + rectangles[9].Height && Xaxis >= rectangles[9].X && Xaxis <= rectangles[9].X + rectangles[9].Width)
+                                {
+                                    msh_3arf = 1;
+                                    rectangles[9].Opacity = 255;
+                                    rectangles[10].Opacity = 100;
+                                }
+                                else
+                                {
+                                    if (yaxis >= rectangles[10].Y && yaxis <= rectangles[10].Y + rectangles[10].Height && Xaxis >= rectangles[10].X && Xaxis <= rectangles[10].X + rectangles[10].Width)
+                                    {
+                                        msh_3arf = 0;
+                                        rectangles[9].Opacity = 100;
+                                        rectangles[10].Opacity = 255;
+                                    }
+
+                                }
+
+                            }
+                            else if (currentScreen == 0)
+                            {
+                                if (yaxis >= rectangles[11].Y && yaxis <= rectangles[11].Y + rectangles[11].Height && Xaxis >= rectangles[11].X && Xaxis <= rectangles[11].X + rectangles[11].Width)
+                                {
+                                    option_picked = 0;
+                                    rectangles[11].Opacity = 255;
+                                    rectangles[12].Opacity = 100;
+                                }
+                                else
+                                {
+                                    if (yaxis >= rectangles[12].Y && yaxis <= rectangles[12].Y + rectangles[12].Height && Xaxis >= rectangles[12].X && Xaxis <= rectangles[12].X + rectangles[12].Width)
+                                    {
+                                        option_picked = 1;
+                                        rectangles[11].Opacity = 100;
+                                        rectangles[12].Opacity = 255;
+                                    }
+
+                                }
+                            }
+
+                            else if (currentScreen == 1)
                             {
 
                                 if (yaxis >= rectangles[0].Y && yaxis <= rectangles[0].Y + rectangles[0].Height && Xaxis >= rectangles[0].X && Xaxis <= rectangles[0].X + rectangles[0].Width)
@@ -1736,6 +1894,20 @@ public class TuioDemo : Form, TuioListener
                                 yaxis = tobj.Y * ClientSize.Height;
                                 Xaxis = tobj.X * ClientSize.Width;
 
+                                yaxis = tobj.Y * ClientSize.Height;
+                                Xaxis = tobj.X * ClientSize.Width;
+
+                                if (yaxis >= rectangles[8].Y && yaxis <= rectangles[8].Y + rectangles[8].Height && Xaxis >= rectangles[8].X && Xaxis <= rectangles[8].X + rectangles[8].Width)
+                                {
+                                    scanner = true;
+                                    rectangles[8].Opacity = 255;
+                                }
+                                else
+                                {
+                                    scanner = false;
+                                    rectangles[8].Opacity = 100;
+                                }
+
                                 float currentAngle = tobj.Angle / (float)Math.PI * 180.0f % 360;
                                 float angleDifference = currentAngle - lastAngle;
 
@@ -1780,12 +1952,7 @@ public class TuioDemo : Form, TuioListener
                             Xaxis = tobj.X * ClientSize.Width;
                             if (yaxis >= rectangles[8].Y && yaxis <= rectangles[8].Y + rectangles[8].Height && Xaxis >= rectangles[8].X && Xaxis <= rectangles[8].X + rectangles[8].Width)
                             {
-
                                 rectangles[8].Opacity = 255;
-
-
-
-
                             }
                             else
                             {
