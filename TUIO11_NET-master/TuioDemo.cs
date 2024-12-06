@@ -143,6 +143,9 @@ public class Product
 }
 public class TuioDemo : Form, TuioListener
 {
+    /// <summary>
+    /// /TO DO: FIX RECTANGLES ADDING
+    /// </summary>
     private TuioClient client;
     private Dictionary<long, TuioObject> objectList;
     private Dictionary<long, TuioCursor> cursorList;
@@ -368,6 +371,32 @@ public class TuioDemo : Form, TuioListener
                 if (ct_tick % 200 == 0)
                 {
                     c.sendMessage("4");
+                    Console.WriteLine("emotion --> happy");
+                    emotion = "happy";
+                    this.Invalidate();
+                    if (msg != "error" && msg != "Unknown")
+                    {
+                        char let = msg[14];
+                        Console.WriteLine(let);
+                        if (let == 'h')
+                        {
+                            emotion = "happy";
+                            Console.WriteLine("Emotion extracted: " + emotion);
+                            this.Invalidate();
+                        }
+                        if (let == 's')
+                        {
+                            emotion = "sad";
+                            Console.WriteLine("Emotion extracted: " + emotion);
+                            this.Invalidate();
+                        }
+                        if (let == 'n')
+                        {
+                            emotion = "neutral";
+                            Console.WriteLine("Emotion extracted: " + emotion);
+                            this.Invalidate();
+                        }
+                    }
                 }
                 else
                 {
@@ -919,8 +948,6 @@ public class TuioDemo : Form, TuioListener
 	protected override void OnPaintBackground(PaintEventArgs pevent)
 	{
 		Rectangle rect;
-
-        // Getting the graphics object
         Graphics g = pevent.Graphics;
 		g.FillRectangle(bgrBrush, new Rectangle(0, 0, width, height));
 		Text = $"{genderText} {ageText} {skinTypeText}";
@@ -936,7 +963,7 @@ public class TuioDemo : Form, TuioListener
         if (emotion == "happy")
         {
             g.Clear(Color.Orange);
-            string topLeftText = "You're glowing! Let’s amplify it!";
+            string topLeftText = "A perfect time to pamper yourself!";
             Font topLeftFont = new Font("Tahoma", 24, FontStyle.Bold); // Adjust font size and style as needed
             PointF topLeftPosition = new PointF(20, 20); // Position in the top-left corner
             g.DrawString(topLeftText, topLeftFont, Brushes.Black, topLeftPosition);
@@ -1501,7 +1528,7 @@ public class TuioDemo : Form, TuioListener
 
             using (Font font = new Font("Tahoma", 16, FontStyle.Bold))
             {
-                g.DrawString("Select to scan a certain product", font, Brushes.Black, new RectangleF(200 - 300 + 130, imageY + image.Height + 10, 700, 300));
+                g.DrawString("Thumbs up to scan a certain product", font, Brushes.Black, new RectangleF(200 - 300 + 130, imageY + image.Height + 10, 700, 300));
             }
         }
         else if (currentScreen == 5)
@@ -1752,7 +1779,7 @@ public class TuioDemo : Form, TuioListener
                     {
 
 
-                        case 1:
+                        case 9:
                             yaxis = tobj.Y * ClientSize.Height;
                             Xaxis = tobj.X * ClientSize.Width;
                             if (currentScreen == -1)
@@ -1947,7 +1974,7 @@ public class TuioDemo : Form, TuioListener
 
                             break;
 
-                        case 9:
+                        case 1:
                             yaxis = tobj.Y * ClientSize.Height;
                             Xaxis = tobj.X * ClientSize.Width;
                             if (yaxis >= rectangles[8].Y && yaxis <= rectangles[8].Y + rectangles[8].Height && Xaxis >= rectangles[8].X && Xaxis <= rectangles[8].X + rectangles[8].Width)
