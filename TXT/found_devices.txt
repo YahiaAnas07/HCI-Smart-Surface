@@ -1,0 +1,2 @@
+2024-11-29 14:59:00, Device Name: SoundCore, MAC Address: AC:12:2F:50:B0:17
+2024-11-29 14:29:17, Device Name: [TV] Samsung 7 Series (65), MAC Address: 00:C3:F4:F8:C8:7D
