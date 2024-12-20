@@ -63,7 +63,7 @@ class Client
             byte[] receiveBuffer = new byte[1024];
             int bytesReceived = stream.Read(receiveBuffer, 0, 1024);
             string data = Encoding.UTF8.GetString(receiveBuffer, 0, bytesReceived);
-            Console.WriteLine(data);
+            //Console.WriteLine(data);
             return data;
         }
         catch (Exception e)
@@ -205,6 +205,8 @@ public class TuioDemo : Form, TuioListener
     bool od = true;
     string emotion = "";
     int msh_3arf = -1;
+    bool emotion_swtich = false;
+    string emotion_handler;
 
     bool send_data = false;
     public TuioDemo(int port)
@@ -284,10 +286,16 @@ public class TuioDemo : Form, TuioListener
     public void pythonSelector()
     {
         string msg = c.receiveMessage();
-        if( msg == "?")
+        Console.WriteLine(msg);
+        if (msg == "?")
         {
             send_data = true;
-            
+
+        }
+        if (msg == "happy" || msg =="sad" || msg == "neutral")
+        {
+            emotion_handler = msg;
+            //DeepFace bati2 awi fa b3ml save lel emotion data hna, 3lshan python byb3t kza msg abl el deepface result  
         }
         if (send_data)
         {
@@ -318,6 +326,12 @@ public class TuioDemo : Form, TuioListener
                         skinTypeText = parts[6];
                         currentScreen = 4;
                         this.Invalidate();
+                    }
+                    else if (msg == "Unknown" && msg != "error" && msg != "TUP")
+                    {
+                        /*
+                         7ot hna unkown user we 7otlo products based on his selections  
+                         */
                     }
 
                 }
@@ -368,35 +382,33 @@ public class TuioDemo : Form, TuioListener
             }
             else if (currentScreen == 4)
             {
-                if (ct_tick % 200 == 0)
+                if (ct_tick % 200 == 0 || emotion_swtich)
                 {
                     c.sendMessage("4");
-                    Console.WriteLine("emotion --> happy");
-                    emotion = "happy";
-                    this.Invalidate();
-                    if (msg != "error" && msg != "Unknown")
+                    Console.WriteLine(emotion_handler);
+                    if (emotion_handler == "happy")
                     {
-                        char let = msg[14];
-                        Console.WriteLine(let);
-                        if (let == 'h')
-                        {
-                            emotion = "happy";
-                            Console.WriteLine("Emotion extracted: " + emotion);
-                            this.Invalidate();
-                        }
-                        if (let == 's')
-                        {
-                            emotion = "sad";
-                            Console.WriteLine("Emotion extracted: " + emotion);
-                            this.Invalidate();
-                        }
-                        if (let == 'n')
-                        {
-                            emotion = "neutral";
-                            Console.WriteLine("Emotion extracted: " + emotion);
-                            this.Invalidate();
-                        }
+                        emotion = "happy";
+                        Console.WriteLine("Emotion extracted: " + emotion);
+                        emotion_swtich = !emotion_swtich;
+                        this.Invalidate();
                     }
+                    else if (emotion_handler == "sad")
+                    {
+                        emotion = "sad";
+                        Console.WriteLine("Emotion extracted: " + emotion);
+                        emotion_swtich = !emotion_swtich;
+                        this.Invalidate();
+                    }
+                    else if (emotion_handler == "neutral")
+                    {
+                        emotion = "neutral";
+                        Console.WriteLine("Emotion extracted: " + emotion);
+                        emotion_swtich = !emotion_swtich;
+                        this.Invalidate();
+                    }
+
+                    
                 }
                 else
                 {
@@ -427,35 +439,6 @@ public class TuioDemo : Form, TuioListener
                 }
             }
         }
-
-        //c.sendMessage("3");
-        //string msg = c.receiveMessage();
-
-        //if (!string.IsNullOrEmpty(msg))
-        //{
-        //    Console.WriteLine(msg);
-        //    if (msg != "Unkown")
-        //    {
-
-        //        // Uncomment and process the message if needed
-        //        // string[] splitData = msg.Split(',');
-        //        // for (int i = 0; i < splitData.Length; i++)
-        //        // {
-        //        //     splitData[i] = splitData[i].Trim();
-        //        // }
-        //        // string recognizedPerson = splitData[0];
-        //        // string productList = splitData[1];
-        //        // Console.WriteLine("Recognized Person: " + recognizedPerson);
-        //        // Console.WriteLine("Product List: " + productList);
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("Unkown");
-        //    }
-
-
-        //}
-        //this.Invalidate();
 
     }
 
@@ -1430,7 +1413,6 @@ public class TuioDemo : Form, TuioListener
                     else
                     {
                         g.RotateTransform(textAngle + 90);
-
                     }
 
                     // Draw text centered at the rotated position
