@@ -150,7 +150,7 @@ public class TuioDemo : Form, TuioListener
     private Dictionary<long, TuioObject> objectList;
     private Dictionary<long, TuioCursor> cursorList;
     private Dictionary<long, TuioBlob> blobList;
-    public int currentScreen = -1;
+    public int currentScreen = 4;
     public int currentProduct = 5;
     float lastAngle = 0;
     public bool openMenu = false;
@@ -200,7 +200,7 @@ public class TuioDemo : Form, TuioListener
     private DataGridView dataGridViewProducts;
     private Label titleLabel;
     List<string> products = new List<string>();
-    int option_picked = 0;
+    int option_picked = -1;
     int pop_up = -1;
     bool od = true;
     string emotion = "";
@@ -305,8 +305,17 @@ public class TuioDemo : Form, TuioListener
                 c.sendMessage("2");
                 if (msg == "TUP")
                 {
-                    currentScreen = 0;
-                    this.Invalidate();
+                    if (msh_3arf == 0)
+                    {
+                        currentScreen = 0;
+                        this.Invalidate();
+                    }
+                    else if (msh_3arf == 1)
+                    {
+                        
+                        currentScreen = 1;
+                        this.Invalidate();
+                    }
                 }
             }
             else if (currentScreen == 0)
@@ -358,8 +367,11 @@ public class TuioDemo : Form, TuioListener
                 c.sendMessage("2");
                 if (msg == "TUP")
                 {
-                    currentScreen = 2;
-                    this.Invalidate();
+                    if (Gender != -1)
+                    {
+                        currentScreen = 2;
+                        this.Invalidate();
+                    }
                 }
             }
             else if (currentScreen == 2)
@@ -367,8 +379,11 @@ public class TuioDemo : Form, TuioListener
                 c.sendMessage("2");
                 if (msg == "TUP")
                 {
-                    currentScreen = 3;
-                    this.Invalidate();
+                    if (age != -1)
+                    {
+                        currentScreen = 3;
+                        this.Invalidate();
+                    }
                 }
             }
             else if (currentScreen == 3)
@@ -376,8 +391,11 @@ public class TuioDemo : Form, TuioListener
                 c.sendMessage("2");
                 if (msg == "TUP")
                 {
-                    currentScreen = 4;
-                    this.Invalidate();
+                    if (skinTypeText != "")
+                    {
+                        currentScreen = 4;
+                        this.Invalidate();
+                    }
                 }
             }
             else if (currentScreen == 4)
@@ -560,8 +578,8 @@ public class TuioDemo : Form, TuioListener
         rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
         rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
         rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
-        rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
-        rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
+        rect = new Rectangle(25, screen_height - 400-80, 350, 290);
+        rectangles.Add(new RectangleShape(25, screen_height - 400 - 80, 350, 290, Color.Gray));
 
         rect = new Rectangle(screen_width / 2 - 600, 300, 500, 500);
         rectangles.Add(new RectangleShape(screen_width / 2 - 600, 300, 500, 500, Color.Gray));
@@ -994,7 +1012,7 @@ public class TuioDemo : Form, TuioListener
             int imageY = rect.Y + (rect.Height - 100) / 2;
 
             using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
-            using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[0].Opacity, Color.ForestGreen)))
+            using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[9].Opacity, Color.ForestGreen)))
             using (Font font = new Font("Tahoma", 28, FontStyle.Bold))
             {
                 // Fill the rounded rectangle
@@ -1014,7 +1032,7 @@ public class TuioDemo : Form, TuioListener
             imageY = rect.Y + (rect.Height - 100) / 2;
 
             using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
-            using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[1].Opacity, Color.ForestGreen)))
+            using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[10].Opacity, Color.ForestGreen)))
             using (Font font = new Font("Tahoma", 28, FontStyle.Bold))
             {
                 // Fill the rounded rectangle
@@ -1062,7 +1080,7 @@ public class TuioDemo : Form, TuioListener
 
             // Create the rounded rectangle path
             using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
-            using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.Green)))
+            using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[11].Opacity, Color.Green)))
             using (Pen borderPen = new Pen(Color.Black, 2))
             {
                 // Fill the rounded rectangle
@@ -1114,7 +1132,7 @@ public class TuioDemo : Form, TuioListener
 
             // Create the rounded rectangle path
             using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
-            using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(200, Color.Green)))
+            using (SolidBrush fillBrush = new SolidBrush(Color.FromArgb(rectangles[12].Opacity, Color.Green)))
             using (Pen borderPen = new Pen(Color.Black, 2))
             {
                 // Fill the rounded rectangle
@@ -1395,13 +1413,22 @@ public class TuioDemo : Form, TuioListener
                     int textX = centerX + (int)(225 * Math.Cos(textRadians));
                     int textY = centerY + (int)(225 * Math.Sin(textRadians));
                     string text;
-                    if (i <= 2)
+                    if (option_picked != -1)
                     {
-                        text = products[i];
+                        if (i <= 2)
+                        {
+                            text = products[i];
+                        }
+                        else
+                        {
+                            text = "???";
+                        }
                     }
                     else
                     {
+                        ///add here unknown user
                         text = "???";
+
                     }
                     Font font = new Font("Arial", 12, FontStyle.Bold);
                     SizeF textSize = g.MeasureString(text, font);
@@ -1780,6 +1807,12 @@ public class TuioDemo : Form, TuioListener
                                         rectangles[9].Opacity = 100;
                                         rectangles[10].Opacity = 255;
                                     }
+                                    else
+                                    {
+                                        msh_3arf = -1;
+                                        rectangles[9].Opacity = 100;
+                                        rectangles[10].Opacity = 100;
+                                    }
 
                                 }
 
@@ -1797,6 +1830,12 @@ public class TuioDemo : Form, TuioListener
                                     if (yaxis >= rectangles[12].Y && yaxis <= rectangles[12].Y + rectangles[12].Height && Xaxis >= rectangles[12].X && Xaxis <= rectangles[12].X + rectangles[12].Width)
                                     {
                                         option_picked = 1;
+                                        rectangles[11].Opacity = 100;
+                                        rectangles[12].Opacity = 255;
+                                    }
+                                    else
+                                    {
+                                        option_picked = -1;
                                         rectangles[11].Opacity = 100;
                                         rectangles[12].Opacity = 255;
                                     }
@@ -1820,6 +1859,12 @@ public class TuioDemo : Form, TuioListener
                                         Gender = 0;
                                         rectangles[0].Opacity = 100;
                                         rectangles[1].Opacity = 255;
+                                    }
+                                    else
+                                    {
+                                        Gender = -1;
+                                        rectangles[0].Opacity = 100;
+                                        rectangles[0].Opacity = 255;
                                     }
 
                                 }
@@ -1854,6 +1899,13 @@ public class TuioDemo : Form, TuioListener
                                             rectangles[2].Opacity = 100;
                                             rectangles[3].Opacity = 100;
                                             rectangles[4].Opacity = 255;
+                                        }
+                                        else
+                                        {
+                                            age = -1;
+                                            rectangles[2].Opacity = 100;
+                                            rectangles[3].Opacity = 100;
+                                            rectangles[4].Opacity = 100;
                                         }
                                     }
                                 }
@@ -1893,6 +1945,13 @@ public class TuioDemo : Form, TuioListener
                                     rectangles[5].Opacity = 100;
                                     rectangles[6].Opacity = 100;
                                     rectangles[7].Opacity = 255;
+                                }
+                                else
+                                {
+                                    skinTypeText = "";
+                                    rectangles[5].Opacity = 100;
+                                    rectangles[6].Opacity = 100;
+                                    rectangles[7].Opacity = 100;
                                 }
 
                                 this.Text = skinTypeText;
