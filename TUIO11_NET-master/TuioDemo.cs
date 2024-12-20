@@ -150,7 +150,7 @@ public class TuioDemo : Form, TuioListener
     private Dictionary<long, TuioObject> objectList;
     private Dictionary<long, TuioCursor> cursorList;
     private Dictionary<long, TuioBlob> blobList;
-    public int currentScreen = 4;
+    public int currentScreen = -1;
     public int currentProduct = 5;
     float lastAngle = 0;
     public bool openMenu = false;
@@ -676,6 +676,37 @@ public class TuioDemo : Form, TuioListener
         //rectangles.Add(new RectangleShape(borderX, borderY, borderWidth, borderHeight, Color.Transparent));
 
 
+        // Create the title label
+        titleLabel = new Label
+        {
+            Text = "Admin Page",
+            Font = new Font("Arial", 16, FontStyle.Bold), // Set font size and style
+            AutoSize = true, // Auto size to fit the text
+            Visible = false
+        };
+
+        // Center the label horizontally on the form
+        titleLabel.Location = new Point((this.ClientSize.Width - titleLabel.Width) / 2, 10);
+
+        // Add the label to the form
+        this.Controls.Add(titleLabel);
+
+        // Create the DataGridView
+        dataGridViewProducts = new DataGridView
+        {
+
+            AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+            AllowUserToAddRows = false,
+            ReadOnly = true,
+            Visible = false // Initially hidden
+        };
+
+        // Set the DataGridView's location and size to fill below the label
+        dataGridViewProducts.Location = new Point(0, titleLabel.Bottom + 10); // Position it below the label
+        dataGridViewProducts.Size = new Size(this.ClientSize.Width, this.ClientSize.Height - titleLabel.Bottom - 10); // Adjust size to fill the space
+
+        // Add the DataGridView to the form
+        this.Controls.Add(dataGridViewProducts);
 
 
         Thread clientThread = new Thread(StartClient);
@@ -1657,6 +1688,35 @@ public class TuioDemo : Form, TuioListener
                     });
                 }
             }
+        }
+        else if(currentScreen==7)
+        {
+
+            dataGridViewProducts.Visible = true;
+            titleLabel.Visible = true;
+            // Read data from the file
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "products.txt");
+            if (File.Exists(filePath))
+            {
+                List<Product> products = ReadProductsFromFile(filePath);
+
+                // Print to console (optional for debugging)
+                foreach (var product in products)
+                {
+                    Console.WriteLine("{0,-20} {1,-10:C} {2,-10}", product.Name, product.Cost, product.Quantity);
+                }
+
+                // Bind data to DataGridView
+                dataGridViewProducts.DataSource = products;
+               
+                // Force UI to refresh
+               
+            }
+            else
+            {
+                MessageBox.Show("products.txt not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
         }
 	
 		
