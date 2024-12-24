@@ -1499,8 +1499,7 @@ public class TuioDemo : Form, TuioListener
             }
 
             Image[] segmentImages = new Image[]
-{
-               
+{      
                 Image.FromFile("tube-of-cream-face-mdmN2wF-600.jpg"),
                 Image.FromFile("tube-of-cream-face-mdmN2wF-600.jpg"),
                 Image.FromFile("tube-of-cream-face-mdmN2wF-600.jpg"),
@@ -1589,11 +1588,55 @@ public class TuioDemo : Form, TuioListener
 
 
             g.DrawImage(image, imageX+30, imageY, image.Width, image.Height);
-
             using (Font font = new Font("Tahoma", 16, FontStyle.Bold))
             {
                 g.DrawString("Thumbs up to scan a certain product", font, Brushes.Black, new RectangleF(200 - 300 + 130, imageY + image.Height + 10, 700, 300));
             }
+
+           
+            imageX = screen_width-300; 
+            imageY = 200; 
+            rectX = screen_width - 300; 
+            rectY = 80; 
+            rectWidth = 270;
+            rectHeight = 150 ; 
+            rect = new Rectangle(rectX, rectY, rectWidth, rectHeight);
+            radius = 20;
+          
+            Color rectColor;
+            if (genderText.ToLower() == "male")
+            {
+                rectColor = Color.FromArgb(100, Color.Turquoise); 
+            }
+            else if (genderText.ToLower() == "female")
+            {
+                rectColor = Color.FromArgb(100, Color.HotPink);
+            }
+            else
+            {
+                rectColor = Color.FromArgb(100, Color.LightGray); 
+            }
+
+            // Draw the rectangle with the selected color
+            using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
+            using (SolidBrush fillBrush = new SolidBrush(rectColor))
+            {
+                g.FillPath(fillBrush, path);
+            }
+
+            
+            font = new Font("Arial", 12, FontStyle.Bold);
+            Brush textBrush = Brushes.Black; 
+            int padding = 20;               
+
+            // Draw dynamic text inside the rectangle
+            g.DrawString($"Name: {bluetoothName}", font, textBrush, rectX + padding, rectY + padding);
+            g.DrawString($"Gender: {genderText}", font, textBrush, rectX + padding, rectY + padding+30);
+            g.DrawString($"Age: {ageText}", font, textBrush, rectX + padding, rectY + padding + 60);
+            g.DrawString($"Skin Type: {skinTypeText}", font, textBrush, rectX + padding, rectY + padding + 90);
+
+          
+           
         }
         else if (currentScreen == 5)
         {
@@ -1995,7 +2038,21 @@ public class TuioDemo : Form, TuioListener
                                 }
 
 
-                                this.Text = age.ToString();
+                                switch (age)
+                                {
+                                    case 1:
+                                        this.Text = "36-49";
+                                        break;
+                                    case 2:
+                                        this.Text = "50+";
+                                        break;
+                                    case 0:
+                                        this.Text = "18-36";
+                                        break;
+                                    default:
+                                        this.Text = "Undefined";
+                                        break;
+                                }
                             }
                             else if (currentScreen == 3)
                             {
