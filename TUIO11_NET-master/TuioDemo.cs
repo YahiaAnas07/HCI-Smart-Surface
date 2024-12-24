@@ -204,7 +204,7 @@ public class TuioDemo : Form, TuioListener
     int pop_up = -1;
     bool od = true;
     string emotion = "";
-    int msh_3arf = -1;
+    int new_user = -1;
     bool emotion_swtich = false;
     string emotion_handler;
 
@@ -295,7 +295,6 @@ public class TuioDemo : Form, TuioListener
         if (msg == "happy" || msg =="sad" || msg == "neutral")
         {
             emotion_handler = msg;
-            //DeepFace bati2 awi fa b3ml save lel emotion data hna, 3lshan python byb3t kza msg abl el deepface result  
         }
         if (send_data)
         {
@@ -305,12 +304,12 @@ public class TuioDemo : Form, TuioListener
                 c.sendMessage("2");
                 if (msg == "TUP")
                 {
-                    if (msh_3arf == 0)
+                    if (new_user == 0)
                     {
                         currentScreen = 0;
                         this.Invalidate();
                     }
-                    else if (msh_3arf == 1)
+                    else if (new_user == 1)
                     {
                         
                         currentScreen = 1;
@@ -333,14 +332,15 @@ public class TuioDemo : Form, TuioListener
                         ageText = parts[4];
                         genderText = parts[5];
                         skinTypeText = parts[6];
-                        currentScreen = 4;
+                        if (bluetoothName == "Pierre Nabil")
+                        {
+                            currentScreen = 7;
+                        }
+                        else
+                        {
+                            currentScreen = 4;
+                        }
                         this.Invalidate();
-                    }
-                    else if (msg == "Unknown" && msg != "error" && msg != "TUP")
-                    {
-                        /*
-                         7ot hna unkown user we 7otlo products based on his selections  
-                         */
                     }
 
                 }
@@ -1457,9 +1457,7 @@ public class TuioDemo : Form, TuioListener
                     }
                     else
                     {
-                        ///add here unknown user
                         text = "???";
-
                     }
                     Font font = new Font("Arial", 12, FontStyle.Bold);
                     SizeF textSize = g.MeasureString(text, font);
@@ -1848,14 +1846,14 @@ public class TuioDemo : Form, TuioListener
                     {
 
 
-                        case 9:
+                        case 0:
                             yaxis = tobj.Y * ClientSize.Height;
                             Xaxis = tobj.X * ClientSize.Width;
                             if (currentScreen == -1)
                             {
                                 if (yaxis >= rectangles[9].Y && yaxis <= rectangles[9].Y + rectangles[9].Height && Xaxis >= rectangles[9].X && Xaxis <= rectangles[9].X + rectangles[9].Width)
                                 {
-                                    msh_3arf = 1;
+                                    new_user = 1;
                                     rectangles[9].Opacity = 255;
                                     rectangles[10].Opacity = 100;
                                 }
@@ -1863,13 +1861,13 @@ public class TuioDemo : Form, TuioListener
                                 {
                                     if (yaxis >= rectangles[10].Y && yaxis <= rectangles[10].Y + rectangles[10].Height && Xaxis >= rectangles[10].X && Xaxis <= rectangles[10].X + rectangles[10].Width)
                                     {
-                                        msh_3arf = 0;
+                                        new_user = 0;
                                         rectangles[9].Opacity = 100;
                                         rectangles[10].Opacity = 255;
                                     }
                                     else
                                     {
-                                        msh_3arf = -1;
+                                        new_user = -1;
                                         rectangles[9].Opacity = 100;
                                         rectangles[10].Opacity = 100;
                                     }
