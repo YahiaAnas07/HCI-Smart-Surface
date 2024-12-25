@@ -393,6 +393,7 @@ public class TuioDemo : Form, TuioListener
                 {
                     if (skinTypeText != "")
                     {
+                        c.sendMessage($"User: {genderText}, {ageText}, {skinTypeText}");
                         currentScreen = 4;
                         this.Invalidate();
                     }
@@ -1181,7 +1182,56 @@ public class TuioDemo : Form, TuioListener
                 g.DrawString(text, font1, Brushes.White, textPosition);
             }
 
+            if (option_picked == 1)
+            {
+                rect2 = new Rectangle(480, 100, 800, 100);
+                radius2 = 20;
+                font1 = new Font("Tahoma", 26, FontStyle.Bold);
+                text = "Keep Your face infront of camera to log in";
+                using (GraphicsPath path2 = GetRoundedRectanglePath(rect2, radius2))
+                using (SolidBrush fillBrush2 = new SolidBrush(Color.FromArgb(128, Color.White)))
+                using (Pen borderPen2 = new Pen(Color.Black, 2))
+                {
+                    g.FillPath(fillBrush2, path2);
 
+                    // Draw the border around the rounded rectangle
+                    g.DrawPath(borderPen2, path2);
+                    // Draw the text in the center of the rounded rectangle
+                    SizeF textSize = g.MeasureString(text, font1);
+                    PointF textPosition = new PointF(
+                        rect2.X + (rect2.Width - textSize.Width) / 2 + 10,
+                        rect2.Y + (rect2.Height - textSize.Height) / 2
+                    );
+                    g.DrawString(text, font1, Brushes.Black, textPosition);
+
+                }
+            }
+            else if(option_picked==0)
+            {
+                rect2 = new Rectangle(480, 100, 800, 100);
+                radius2 = 20;
+                font1 = new Font("Tahoma", 26, FontStyle.Bold);
+                text = "Open your Bluetooth and connect to log in";
+                using (GraphicsPath path2 = GetRoundedRectanglePath(rect2, radius2))
+                using (SolidBrush fillBrush2 = new SolidBrush(Color.FromArgb(128, Color.White)))
+                using (Pen borderPen2 = new Pen(Color.Black, 2))
+                {
+                    g.FillPath(fillBrush2, path2);
+
+                    // Draw the border around the rounded rectangle
+                    g.DrawPath(borderPen2, path2);
+                    // Draw the text in the center of the rounded rectangle
+                    SizeF textSize = g.MeasureString(text, font1);
+                    PointF textPosition = new PointF(
+                        rect2.X + (rect2.Width - textSize.Width) / 2 + 10,
+                        rect2.Y + (rect2.Height - textSize.Height) / 2
+                    );
+                    g.DrawString(text, font1, Brushes.Black, textPosition);
+
+                }
+            }
+
+          
 
         }
         else if (currentScreen == 1)
@@ -1934,12 +1984,7 @@ public class TuioDemo : Form, TuioListener
                                         rectangles[9].Opacity = 100;
                                         rectangles[10].Opacity = 255;
                                     }
-                                    else
-                                    {
-                                        msh_3arf = -1;
-                                        rectangles[9].Opacity = 100;
-                                        rectangles[10].Opacity = 100;
-                                    }
+                                   
 
                                 }
 
@@ -1960,12 +2005,7 @@ public class TuioDemo : Form, TuioListener
                                         rectangles[11].Opacity = 100;
                                         rectangles[12].Opacity = 255;
                                     }
-                                    else
-                                    {
-                                        option_picked = -1;
-                                        rectangles[11].Opacity = 100;
-                                        rectangles[12].Opacity = 255;
-                                    }
+                                   
 
                                 }
                             }
@@ -1987,12 +2027,7 @@ public class TuioDemo : Form, TuioListener
                                         rectangles[0].Opacity = 100;
                                         rectangles[1].Opacity = 255;
                                     }
-                                    else
-                                    {
-                                        Gender = -1;
-                                        rectangles[0].Opacity = 100;
-                                        rectangles[0].Opacity = 255;
-                                    }
+                                  
 
                                 }
                                 genderText = Gender == 0 ? "Female" : "Male";
@@ -2027,13 +2062,7 @@ public class TuioDemo : Form, TuioListener
                                             rectangles[3].Opacity = 100;
                                             rectangles[4].Opacity = 255;
                                         }
-                                        else
-                                        {
-                                            age = -1;
-                                            rectangles[2].Opacity = 100;
-                                            rectangles[3].Opacity = 100;
-                                            rectangles[4].Opacity = 100;
-                                        }
+                                        
                                     }
                                 }
 
@@ -2087,13 +2116,7 @@ public class TuioDemo : Form, TuioListener
                                     rectangles[6].Opacity = 100;
                                     rectangles[7].Opacity = 255;
                                 }
-                                else
-                                {
-                                    skinTypeText = "";
-                                    rectangles[5].Opacity = 100;
-                                    rectangles[6].Opacity = 100;
-                                    rectangles[7].Opacity = 100;
-                                }
+                              
 
                                 this.Text = skinTypeText;
                             }
