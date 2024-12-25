@@ -200,7 +200,7 @@ public class TuioDemo : Form, TuioListener
     private DataGridView dataGridViewProducts;
     private Label titleLabel;
     List<string> products = new List<string>();
-    int option_picked = -1;
+    int option_picked = 0;
     int pop_up = -1;
     bool od = true;
     string emotion = "";
@@ -322,7 +322,7 @@ public class TuioDemo : Form, TuioListener
                 if(option_picked == 0)
                 {
                     c.sendMessage("3");
-                    if (msg != "Unknown" && msg != "error" && msg != "TUP")
+                    if (msg != "Unknown" && msg != "error" && msg != "TUP" && msg!= "?")
                     {
                         string[] parts = msg.Split(',');
                         bluetoothName = parts[0];
@@ -334,7 +334,7 @@ public class TuioDemo : Form, TuioListener
                         skinTypeText = parts[6];
                         if (bluetoothName == "Pierre Nabil")
                         {
-                            currentScreen = 7;
+                            currentScreen = 4; // Make it 7 as Pierre is Admin
                         }
                         else
                         {
@@ -578,8 +578,8 @@ public class TuioDemo : Form, TuioListener
         rectangles.Add(new RectangleShape(screen_width / 2 - 250, 300, 500, 500, Color.Gray));
         rect = new Rectangle(screen_width / 2 + 350, 300, 500, 500);
         rectangles.Add(new RectangleShape(screen_width / 2 + 350, 300, 500, 500, Color.Gray));
-        rect = new Rectangle(25, screen_height - 400-80, 350, 290);
-        rectangles.Add(new RectangleShape(25, screen_height - 400 - 80, 350, 290, Color.Gray));
+        rect = new Rectangle(25, screen_height - 400-80, 400, 290);
+        rectangles.Add(new RectangleShape(25, screen_height - 400 - 80, 400, 290, Color.Gray));
 
         rect = new Rectangle(screen_width / 2 - 600, 300, 500, 500);
         rectangles.Add(new RectangleShape(screen_width / 2 - 600, 300, 500, 500, Color.Gray));
@@ -1443,7 +1443,7 @@ public class TuioDemo : Form, TuioListener
                     double textRadians = textAngle * Math.PI / 180;
                     int textX = centerX + (int)(225 * Math.Cos(textRadians));
                     int textY = centerY + (int)(225 * Math.Sin(textRadians));
-                    string text;
+                    string text="";
                     if (option_picked != -1)
                     {
                         if (i <= 2)
@@ -1457,7 +1457,25 @@ public class TuioDemo : Form, TuioListener
                     }
                     else
                     {
-                        text = "???";
+                        if (i == 5)
+                        {
+                            text = "CervaVe Cleanser";
+                        }
+                        else if (i == 4)
+                        {
+                            text = "Kolagra Sunscreen";
+                        }
+                        else if (i == 3)
+                        {
+                           
+                            text = "Kolgra Cleanser";
+                        }
+                        else
+                        {
+                            text = "???";
+                        }
+
+
                     }
                     Font font = new Font("Arial", 12, FontStyle.Bold);
                     SizeF textSize = g.MeasureString(text, font);
@@ -1481,28 +1499,29 @@ public class TuioDemo : Form, TuioListener
             }
 
             Image[] segmentImages = new Image[]
-{
+{      
+                Image.FromFile("tube-of-cream-face-mdmN2wF-600.jpg"),
+                Image.FromFile("tube-of-cream-face-mdmN2wF-600.jpg"),
+                Image.FromFile("tube-of-cream-face-mdmN2wF-600.jpg"),
                 Image.FromFile("p1.png"),
-                Image.FromFile("p1.png"),
-                Image.FromFile("p1.png"),
-                Image.FromFile("p1.png"),
-                Image.FromFile("p1.png"),
-                Image.FromFile("p1.png")
+                Image.FromFile("kolagra-sunscreen-gel-dry-touch-spf-50_front_photo_original.jpg"),
+                Image.FromFile("cerave-hydrating-cleanser-normal-to-dry-skin-473ml_1.jpg")
 };
             string[] segmentDescriptions = new string[]
 {
-    "Description for Segment 1",
-    "Description for Segment 2",
-    "Description for Segment 3",
-    "Description for Segment 4",
-    "Description for Segment 5",
-    "Description for Segment 6"
+    "???",
+    "???",
+    "???",
+    "Kulagra Cleanser for oily and combination skin contains 1%\nsalicylic acid to treat pimples, niacinamide, and green tea\nextract to deeply cleanse skin pores, regulate sebum secretion,\nand reduce pore size. Use it morning and evening to get clear skin without pimples.\nMade For: Oily and Combination Skin\nHelps With: Pimples, Sebum Regulation, and Pore Reduction",
+    "Kolagra Sunscreen SPF50+ combines sunscreen and antioxidants\nto maximize protection from UV rays and ROS , which can damage the skin.\nIt features both chemical and physical filters without leaving residue on the skin.\nKolagra Sunscreen is a cream-gel suitable for all skin types.\nMade For: All Skin Types\nHelps With: UV and ROS Protection",
+    "CeraVe Hydrating Facial Cleanser was designed to cleanse and refresh the skin without\nover-stripping it or leaving it feeling tight and dry.\nMade For: Normal to Dry Skin\nHelps With: Cleansing"
 };
+
 
             Image currentImage = segmentImages[currentProduct];
 
-            int imageWidth = 100; // Set your desired image width
-            int imageHeight = 100; // Set your desired image height
+            int imageWidth = 200; // Set your desired image width
+            int imageHeight = 200; // Set your desired image height
             Rectangle imageRect = new Rectangle(
                 centerX - imageWidth / 2,
                 centerY - imageHeight / 2,
@@ -1519,7 +1538,13 @@ public class TuioDemo : Form, TuioListener
             SizeF tSize = g.MeasureString(t, font);
             using (Font font = new Font("Arial", 12, FontStyle.Bold))
             {
-                g.DrawString(t, font, Brushes.Black, tX - tSize.Width / 2, tY - tSize.Height / 2);
+
+                // Adjust to ensure text fits within the screen bounds
+                tX = Math.Max(0, tX - (int)tSize.Width / 2 - 150); // Ensure X position stays within bounds
+                tY = Math.Max(0, tY - (int)tSize.Height / 2);      // Ensure Y position stays within bounds
+
+                // Draw the string
+                g.DrawString(t, font, Brushes.Black, tX, tY);
             }
 
 
@@ -1543,7 +1568,7 @@ public class TuioDemo : Form, TuioListener
             imageY = screen_height - 400;
             int rectX = 200 - 175;
             int rectY = imageY - 80;
-            int rectWidth = 350;
+            int rectWidth = 400;
             int rectHeight = (image.Height + 20) + 200 + 10;
 
             // Draw the rectangle
@@ -1562,12 +1587,56 @@ public class TuioDemo : Form, TuioListener
 
 
 
-            g.DrawImage(image, imageX, imageY, image.Width, image.Height);
-
+            g.DrawImage(image, imageX+30, imageY, image.Width, image.Height);
             using (Font font = new Font("Tahoma", 16, FontStyle.Bold))
             {
                 g.DrawString("Thumbs up to scan a certain product", font, Brushes.Black, new RectangleF(200 - 300 + 130, imageY + image.Height + 10, 700, 300));
             }
+
+           
+            imageX = screen_width-300; 
+            imageY = 200; 
+            rectX = screen_width - 300; 
+            rectY = 80; 
+            rectWidth = 270;
+            rectHeight = 150 ; 
+            rect = new Rectangle(rectX, rectY, rectWidth, rectHeight);
+            radius = 20;
+          
+            Color rectColor;
+            if (genderText.ToLower() == "male")
+            {
+                rectColor = Color.FromArgb(100, Color.Turquoise); 
+            }
+            else if (genderText.ToLower() == "female")
+            {
+                rectColor = Color.FromArgb(100, Color.HotPink);
+            }
+            else
+            {
+                rectColor = Color.FromArgb(100, Color.LightGray); 
+            }
+
+            // Draw the rectangle with the selected color
+            using (GraphicsPath path = GetRoundedRectanglePath(rect, radius))
+            using (SolidBrush fillBrush = new SolidBrush(rectColor))
+            {
+                g.FillPath(fillBrush, path);
+            }
+
+            
+            font = new Font("Arial", 12, FontStyle.Bold);
+            Brush textBrush = Brushes.Black; 
+            int padding = 20;               
+
+            // Draw dynamic text inside the rectangle
+            g.DrawString($"Name: {bluetoothName}", font, textBrush, rectX + padding, rectY + padding);
+            g.DrawString($"Gender: {genderText}", font, textBrush, rectX + padding, rectY + padding+30);
+            g.DrawString($"Age: {ageText}", font, textBrush, rectX + padding, rectY + padding + 60);
+            g.DrawString($"Skin Type: {skinTypeText}", font, textBrush, rectX + padding, rectY + padding + 90);
+
+          
+           
         }
         else if (currentScreen == 5)
         {
@@ -1846,7 +1915,7 @@ public class TuioDemo : Form, TuioListener
                     {
 
 
-                        case 0:
+                        case 2:
                             yaxis = tobj.Y * ClientSize.Height;
                             Xaxis = tobj.X * ClientSize.Width;
                             if (currentScreen == -1)
@@ -1969,7 +2038,21 @@ public class TuioDemo : Form, TuioListener
                                 }
 
 
-                                this.Text = age.ToString();
+                                switch (age)
+                                {
+                                    case 1:
+                                        this.Text = "36-49";
+                                        break;
+                                    case 2:
+                                        this.Text = "50+";
+                                        break;
+                                    case 0:
+                                        this.Text = "18-36";
+                                        break;
+                                    default:
+                                        this.Text = "Undefined";
+                                        break;
+                                }
                             }
                             else if (currentScreen == 3)
                             {
@@ -2172,7 +2255,7 @@ public class TuioDemo : Form, TuioListener
                         }
                         else
                         {
-                            Console.WriteLine($"Background image not found: {backgroundImagePath}");
+                           // Console.WriteLine($"Background image not found: {backgroundImagePath}");
                         }
 
                         // Draw object image with rotation
@@ -2197,7 +2280,7 @@ public class TuioDemo : Form, TuioListener
                         }
                         else
                         {
-                            Console.WriteLine($"Object image not found: {objectImagePath}");
+                           // Console.WriteLine($"Object image not found: {objectImagePath}");
                             // Fall back to drawing a rectangle
                             g.FillRectangle(objBrush, new Rectangle(ox - size / 2, oy - size / 2, size, size));
                         }
