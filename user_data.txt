@@ -1,0 +1,5 @@
+Pierre Nabil,Product 4;Product 5;Product 6,21,Male,Normal
+Khaled Mohamed,Product A;Product B;Product C,21,male,dry
+Aly Essam,Product 1;Product 2;Product 3,19,male,oily
+SoundCore,Product X;Product Y;Product Z,23,female,normal
+User 3,Product X,Product Y,Product Z, 50+,Male, Oily

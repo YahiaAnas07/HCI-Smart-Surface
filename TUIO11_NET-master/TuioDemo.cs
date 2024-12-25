@@ -200,7 +200,7 @@ public class TuioDemo : Form, TuioListener
     private DataGridView dataGridViewProducts;
     private Label titleLabel;
     List<string> products = new List<string>();
-    int option_picked = 0;
+    int option_picked = -1;
     int pop_up = -1;
     bool od = true;
     string emotion = "";
@@ -319,7 +319,7 @@ public class TuioDemo : Form, TuioListener
             }
             else if (currentScreen == 0)
             {
-                if(option_picked == 0)
+                if(option_picked == 1)
                 {
                     c.sendMessage("3");
                     if (msg != "Unknown" && msg != "error" && msg != "TUP" && msg!= "?")
@@ -334,7 +334,7 @@ public class TuioDemo : Form, TuioListener
                         skinTypeText = parts[6];
                         if (bluetoothName == "Pierre Nabil")
                         {
-                            currentScreen = 4; // Make it 7 as Pierre is Admin
+                            currentScreen = 7; // Make it 7 as Pierre is Admin
                         }
                         else
                         {
@@ -344,7 +344,7 @@ public class TuioDemo : Form, TuioListener
                     }
 
                 }
-                else if (option_picked == 1)
+                else if (option_picked == 0)
                 {
                     c.sendMessage("5");
                     if (msg == "Soundcore")
@@ -393,7 +393,7 @@ public class TuioDemo : Form, TuioListener
                 {
                     if (skinTypeText != "")
                     {
-                        c.sendMessage($"User: {genderText}, {ageText}, {skinTypeText}");
+                        c.sendMessage($"{genderText}, {ageText}, {skinTypeText}");
                         currentScreen = 4;
                         this.Invalidate();
                     }
@@ -455,6 +455,14 @@ public class TuioDemo : Form, TuioListener
                         pop_up = int.Parse(msg);
                         this.Invalidate();
                     }
+                }
+            }
+            else if (currentScreen == 7)
+            {
+                c.sendMessage("2");
+                if(msg == "TUP")
+                {
+                    c.sendMessage("Delete"); 
                 }
             }
         }
@@ -2071,12 +2079,15 @@ public class TuioDemo : Form, TuioListener
                                 {
                                     case 1:
                                         this.Text = "36-49";
+                                        ageText = "36-49";
                                         break;
                                     case 2:
                                         this.Text = "50+";
+                                        ageText = "50+";
                                         break;
                                     case 0:
                                         this.Text = "18-36";
+                                        ageText = "18-36";
                                         break;
                                     default:
                                         this.Text = "Undefined";
@@ -2089,7 +2100,7 @@ public class TuioDemo : Form, TuioListener
                                 Xaxis = tobj.X * ClientSize.Width;
                                 if (yaxis >= rectangles[5].Y && yaxis <= rectangles[5].Y + rectangles[5].Height && Xaxis >= rectangles[5].X && Xaxis <= rectangles[5].X + rectangles[5].Width)
                                 {
-                                    skinTypeText = "Normal skin";
+                                    skinTypeText = "Normal";
                                     rectangles[5].Opacity = 255;
                                     rectangles[6].Opacity = 100;
                                     rectangles[7].Opacity = 100;
@@ -2100,7 +2111,7 @@ public class TuioDemo : Form, TuioListener
                                 }
                                 else if (yaxis >= rectangles[6].Y && yaxis <= rectangles[6].Y + rectangles[6].Height && Xaxis >= rectangles[6].X && Xaxis <= rectangles[6].X + rectangles[6].Width)
                                 {
-                                    skinTypeText = "Dry skin";
+                                    skinTypeText = "Dry";
                                     rectangles[5].Opacity = 100;
                                     rectangles[6].Opacity = 255;
                                     rectangles[7].Opacity = 100;
@@ -2111,7 +2122,7 @@ public class TuioDemo : Form, TuioListener
                                 else if (yaxis >= rectangles[7].Y && yaxis <= rectangles[7].Y + rectangles[7].Height && Xaxis >= rectangles[7].X && Xaxis <= rectangles[7].X + rectangles[7].Width)
                                 {
 
-                                    skinTypeText = "Oily skin";
+                                    skinTypeText = "Oily";
                                     rectangles[5].Opacity = 100;
                                     rectangles[6].Opacity = 100;
                                     rectangles[7].Opacity = 255;

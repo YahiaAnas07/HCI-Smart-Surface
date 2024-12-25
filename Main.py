@@ -23,7 +23,6 @@ thumbs_down_recognizer=Return_Thumbs_Down_Temp()
 Swipe_Left_recognizer=Return_Swipe_Left_Temp()
 Swipe_Right_recognizer=Return_Swipe_Right_Temp()
 
-
 model, reference_product, orb = load_model_and_reference_images()
 print("loading DeepFace model...")
 load_deepface()
@@ -39,15 +38,15 @@ predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 pose = mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 hands = mp_hands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7)
 
-user_data = {
-    "Khaled Mohamed" : "Product A, Product B, Product C, 21, male, dry" , 
-    ##############################
-    "Aly Essam" : "Product 1, Product 2, Product 3, 19 ,male, oily"  ,
-    ##############################
-    "Pierre Nabil" : "Product 4 ,Product 5, Product 6, 21, Male, Normal",
-    #############################
-    "SoundCore" : " Product X, Product Y, Product Z, 23, female, normal"  , 
-}
+# user_data = {
+#     "Khaled Mohamed" : "Product A, Product B, Product C, 21, male, dry" , 
+#     ##############################
+#     "Aly Essam" : "Product 1, Product 2, Product 3, 19 ,male, oily"  ,
+#     ##############################
+#     "Pierre Nabil" : "Product 4 ,Product 5, Product 6, 21, Male, Normal",
+#     #############################
+#     "SoundCore" : " Product X, Product Y, Product Z, 23, female, normal"  , 
+# }
 
 gest = {
     ##########
@@ -120,7 +119,72 @@ def get_BT():
     else:
         print("No target device found.")
 
+def load_user_data(filename = "user_data.txt"):
+    user_data = {}
+    try:
+        with open(filename, 'r') as file:
+            for line in file:
+                if not line.strip() or line.strip().startswith('#'):
+                    continue
+                    
+                data = line.strip().split(',')
+                if len(data) != 5:
+                    print(f"Invalid data format in line: {line}")
+                    continue
+                    
+                name = data[0].strip()
+                products = data[1].strip().split(';')
+                age = data[2].strip()
+                gender = data[3].strip()
+                skin_type = data[4].strip()
+                
+                user_data[name] = f"{', '.join(products)}, {age}, {gender}, {skin_type}"
+                
+    except FileNotFoundError:
+        print(f"Error: {filename} not found")
+    except Exception as e:
+        print(f"Error reading file: {e}")
+        
+    return user_data
+
+def write_new_user(filename, data):
+    try:
+        with open(filename, 'r') as file:
+            lines = file.readlines()
+            if lines:
+                last_line = lines[-1].strip()
+                last_user = last_line.split(',')[0].strip()
+                if last_user.startswith('User '):
+                    next_user_num = int(last_user.split('User ')[1]) + 1
+                else:
+                    next_user_num = 1
+            else:
+                next_user_num = 1
+        
+        with open(filename , 'a') as file:
+            user_data = data.split(',')
+            new_user = f"User {next_user_num},Product X,Product Y,Product Z,{user_data[1]},{user_data[0]},{user_data[2]}\n"
+            file.write(new_user)
+            
+    except Exception as e:
+        print(f"Error: {e}")
+ 
+def Delete_user(filename, user_Number):
+    try:
+        with open (filename, 'r') as file:
+            lines = file.readlines()
+        
+        target = f"User {user_Number}"
+        new_lines = [line for line in lines if not line.startswith(target)]
+        
+        with open(filename, 'w') as file:
+            file.writelines(new_lines)
+            
+    except Exception as e:
+        print(f"Error: {e}")
+        
 def count_fingers(hand_landmarks):
+    time.sleep(1)
     thumb = 1 if hand_landmarks[4].x < hand_landmarks[3].x else 0
     index = 1 if hand_landmarks[8].y < hand_landmarks[6].y else 0
     middle = 1 if hand_landmarks[12].y < hand_landmarks[10].y else 0
@@ -149,6 +213,7 @@ def gesture_control(hand_points):
     gesture_name, gesture_identifier, gesture_score = best_result
     return gesture_name
     
+    
 def send_data(data):
     if framecnt >0  and framecnt <=1:
         data = "!"
@@ -162,12 +227,23 @@ def read_data():
         try:
             data = conn.recv(1024)
             if data:
+                
                 try:
                     msg = data.decode('utf-8')
+                    
+                    if msg == "Delete":
+                        target = count_fingers(hand_landmarks.landmark)
+                        Delete_user("user_data.txt", target)
+                        print(f"Deleted--> User {target}")
+                    
+                    if len(msg.split(',')) == 3:
+                        write_new_user("user_data.txt", msg)
+                        
                     if msg != prev_msg:
                         prev_msg = msg
                         msg_ct += 1
                     print("Received data:", msg)
+                    
                 except UnicodeDecodeError as decode_error:
                     send_data("error")
                     print(f"Error decoding data: {decode_error}")
@@ -213,6 +289,8 @@ def read_data():
                         
                         
                 elif msg == "3":
+                    user_data = {}
+                    user_data = load_user_data()
                     try:
                         face_locations, face_names, process_this_frame = face_recognition_processing(
                             frame, known_face_encodings, known_face_names, True
@@ -318,35 +396,35 @@ while cap.isOpened():
     
     faces = detector(gray)
     if faces:
-        face = faces[0]
-        landmarks = predictor(gray, face)
+        # face = faces[0]
+        # landmarks = predictor(gray, face)
         
-        gaze_ratio_left_eye, left_eye_coords = get_gaze_ratio([36, 37, 38, 39, 40, 41], landmarks, frame, gray)
-        gaze_ratio_right_eye, right_eye_coords = get_gaze_ratio([42, 43, 44, 45, 46, 47], landmarks, frame, gray)
+        # gaze_ratio_left_eye, left_eye_coords = get_gaze_ratio([36, 37, 38, 39, 40, 41], landmarks, frame, gray)
+        # gaze_ratio_right_eye, right_eye_coords = get_gaze_ratio([42, 43, 44, 45, 46, 47], landmarks, frame, gray)
         
-        cv2.line(frame, 
-         (int(left_eye_coords[0] - 5), int(left_eye_coords[1])),
-         (int(left_eye_coords[0] + 5), int(left_eye_coords[1])),
-         (0, 255, 0), 1)  
-        cv2.line(frame, 
-         (int(left_eye_coords[0]), int(left_eye_coords[1] - 5)),
-         (int(left_eye_coords[0]), int(left_eye_coords[1] + 5)),
-         (0, 255, 0), 1)  
+        # cv2.line(frame, 
+        #  (int(left_eye_coords[0] - 5), int(left_eye_coords[1])),
+        #  (int(left_eye_coords[0] + 5), int(left_eye_coords[1])),
+        #  (0, 255, 0), 1)  
+        # cv2.line(frame, 
+        #  (int(left_eye_coords[0]), int(left_eye_coords[1] - 5)),
+        #  (int(left_eye_coords[0]), int(left_eye_coords[1] + 5)),
+        #  (0, 255, 0), 1)  
 
-        cv2.line(frame, 
-         (int(right_eye_coords[0] - 5), int(right_eye_coords[1])),
-         (int(right_eye_coords[0] + 5), int(right_eye_coords[1])),
-         (0, 255, 0), 1) 
-        cv2.line(frame, 
-         (int(right_eye_coords[0]), int(right_eye_coords[1] - 5)),
-         (int(right_eye_coords[0]), int(right_eye_coords[1] + 5)),
-         (0, 255, 0), 1) 
+        # cv2.line(frame, 
+        #  (int(right_eye_coords[0] - 5), int(right_eye_coords[1])),
+        #  (int(right_eye_coords[0] + 5), int(right_eye_coords[1])),
+        #  (0, 255, 0), 1) 
+        # cv2.line(frame, 
+        #  (int(right_eye_coords[0]), int(right_eye_coords[1] - 5)),
+        #  (int(right_eye_coords[0]), int(right_eye_coords[1] + 5)),
+        #  (0, 255, 0), 1) 
         
-        x_eye = (left_eye_coords [0] + right_eye_coords [0]) / 2
-        y_eye = (left_eye_coords [1] + right_eye_coords [1]) /2
+        # x_eye = (left_eye_coords [0] + right_eye_coords [0]) / 2
+        # y_eye = (left_eye_coords [1] + right_eye_coords [1]) /2
         
-        eye_points = f"{x_eye}, {y_eye}, \n"
-        start_eye_typing = True
+        # eye_points = f"{x_eye}, {y_eye}, \n"
+        # start_eye_typing = True
 
         pose_results = pose.process(RGB)
         hand_results = hands.process(RGB)
@@ -360,6 +438,7 @@ while cap.isOpened():
             x1, y1, x2, y2 = map(int, (x1, y1, x2, y2))
             cv2.rectangle(original_frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
             label = f"Confidence: {confidence:.2f}"
+            
             cv2.putText(
                 original_frame,
                 label,
@@ -369,6 +448,7 @@ while cap.isOpened():
                 (0, 255, 0),
                 2,
             )
+            
             cropped_object = frame[y1:y2, x1:x2]
             cropped_object_gray = cv2.cvtColor(cropped_object, cv2.COLOR_BGR2GRAY)
         try:

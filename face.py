@@ -6,7 +6,7 @@ from deepface import DeepFace
 def load_deepface():
     dummy_image = np.zeros((224, 224, 3), dtype=np.uint8)
     try:
-        DeepFace.analyze(img_path=dummy_image, actions=['age', 'gender', 'emotion'], enforce_detection=False)
+        DeepFace.analyze(img_path=dummy_image, actions=['emotion'], enforce_detection=False)
         print("DeepFace model preloaded successfully.")
     except Exception as e:
         print(f"Error during loading DeepFace: {e}")
@@ -18,7 +18,7 @@ def analyze_faces_with_deepface(frame, face_locations):
         face_image = frame[top:bottom, left:right]
 
         try:
-            result = DeepFace.analyze(face_image, actions=['age', 'gender', 'emotion'], enforce_detection=False)
+            result = DeepFace.analyze(face_image, actions=['emotion'], enforce_detection=False)
             if isinstance(result, list):
                 result = result[0] 
             deepface_results.append(result)
@@ -52,9 +52,12 @@ def load_faces():
 
     aly_image = face_recognition.load_image_file("images/aly.jpg")
     aly_face_encoding = face_recognition.face_encodings(aly_image)[0]
+    
+    pierre_image = face_recognition.load_image_file("images/pierre.jpeg")
+    pierre_face_encoding = face_recognition.face_encodings(pierre_image)[0]
 
-    known_face_encodings = [khaled_face_encoding, aly_face_encoding]
-    known_face_names = ["Khaled Mohamed", "Aly Essam"]
+    known_face_encodings = [khaled_face_encoding, aly_face_encoding, pierre_face_encoding]
+    known_face_names = ["Khaled Mohamed", "Aly Essam", "Pierre Nabil"]
     
     return known_face_encodings, known_face_names
     
